@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Sidebar scrollbar tetap bisa di-scroll tapi dropdown bisa muncul keluar */
+nav {
+  overflow: visible !important;
+}
+
+/* Sembunyikan scrollbar tapi tetap bisa di-scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+
+
+
+
+
+
+
