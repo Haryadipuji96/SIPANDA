@@ -3,6 +3,13 @@
         [x-cloak] {
             display: none !important;
         }
+
+        /* 🔹 Biar toast-nya lebih kecil dan elegan */
+        .swal2-popup.small-toast {
+            font-size: 0.85rem !important;
+            padding: 0.75rem 1rem !important;
+            min-width: 220px !important;
+        }
     </style>
 
     <div class="p-4 md:p-6" x-data="{ openTambah: false, editId: null }">
@@ -13,7 +20,9 @@
                 <button @click="openTambah = true"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition text-sm md:text-base flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                            clip-rule="evenodd" />
                     </svg>
                     Tambah Dokumen
                 </button>
@@ -81,9 +90,8 @@
                                         method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Hapus"
-                                            onclick="return confirm('Yakin ingin menghapus dokumen ini?')"
-                                            class="text-red-600 hover:text-red-800 transition">
+                                        <button type="button"
+                                            class="btn-hapus text-red-600 hover:text-red-700 transition" title="Hapus">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -107,14 +115,15 @@
 
         <!-- Modal Tambah -->
         <div x-show="openTambah" x-cloak
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
             <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <!-- Header -->
                 <div class="bg-green-600 text-white p-4 rounded-t-lg">
                     <h2 class="text-lg font-semibold">Tambah Dokumen MoU</h2>
                 </div>
-                
-                <form action="{{ route('dokumen_pascasarjana.store') }}" method="POST" enctype="multipart/form-data" class="p-5">
+
+                <form action="{{ route('dokumen_pascasarjana.store') }}" method="POST" enctype="multipart/form-data"
+                    class="p-5">
                     @csrf
 
                     <!-- Grid 2 kolom -->
@@ -147,7 +156,8 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat Kerjasama</label>
-                                <input type="text" name="tingkat_kerjasama" placeholder="Masukkan tingkat kerjasama"
+                                <input type="text" name="tingkat_kerjasama"
+                                    placeholder="Masukkan tingkat kerjasama"
                                     class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
                             </div>
 
@@ -217,15 +227,16 @@
 
         <!-- Modal Edit -->
         <div x-show="editId !== null" x-cloak
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
             <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <!-- Header -->
                 <div class="bg-green-600 text-white p-4 rounded-t-lg">
                     <h2 class="text-lg font-semibold">Edit Dokumen MoU</h2>
                 </div>
-                
+
                 <template x-for="item in {{ json_encode($dokumen_pascasarjana) }}" :key="item.id">
-                    <form x-show="editId === item.id" :action="`/dokumen_pascasarjana/${item.id}`" method="POST" enctype="multipart/form-data" class="p-5">
+                    <form x-show="editId === item.id" :action="`/dokumen_pascasarjana/${item.id}`" method="POST"
+                        enctype="multipart/form-data" class="p-5">
                         @csrf
                         @method('PUT')
 
@@ -258,13 +269,15 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat Kerjasama</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat
+                                        Kerjasama</label>
                                     <input type="text" name="tingkat_kerjasama" x-model="item.tingkat_kerjasama"
                                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Penanggung
+                                        Jawab</label>
                                     <input type="text" name="penanggung_jawab" x-model="item.penanggung_jawab"
                                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 </div>
@@ -297,14 +310,18 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload File Dokumen</label>
-                                    <input type="file" name="file_dokumen" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload File
+                                        Dokumen</label>
+                                    <input type="file" name="file_dokumen"
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <p class="text-xs text-gray-500 mt-1">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 5MB)</p>
+                                    <p class="text-xs text-gray-500 mt-1">Format: PDF, DOC, DOCX, JPG, PNG (Maks. 5MB)
+                                    </p>
                                     <template x-if="item.file_dokumen">
                                         <div class="text-xs mt-1 text-blue-600">
                                             <span>File saat ini: </span>
-                                            <a :href="`/storage/${item.file_dokumen}`" target="_blank" class="underline">Lihat</a>
+                                            <a :href="`/storage/${item.file_dokumen}`" target="_blank"
+                                                class="underline">Lihat</a>
                                         </div>
                                     </template>
                                 </div>
@@ -334,4 +351,90 @@
             </div>
         </div>
     </div>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ✅ Notifikasi sukses (pojok kanan atas)
+        @if (session('success'))
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f9fafb',
+                color: '#1f2937',
+                iconColor: '#22c55e',
+                customClass: {
+                    popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                },
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        @endif
+
+        // ✅ Notifikasi error
+        @if (session('error'))
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
+                background: '#fef2f2',
+                color: '#991b1b',
+                iconColor: '#ef4444',
+                customClass: {
+                    popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                }
+            });
+        @endif
+
+        // ✅ Konfirmasi hapus (masih modal besar, biar jelas)
+        document.querySelectorAll('.btn-hapus').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                let form = this.closest('form');
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus data ini?',
+                    text: 'Data yang sudah dihapus tidak bisa dikembalikan.',
+                    icon: 'warning',
+                    background: '#f9fafb',
+                    color: '#1f2937',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#9ca3af',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Menghapus data...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            background: '#f9fafb',
+                            color: '#1f2937',
+                            iconColor: '#3b82f6',
+                            customClass: {
+                                popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                            }
+                        });
+
+                        setTimeout(() => form.submit(), 1000);
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

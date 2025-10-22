@@ -13,7 +13,7 @@ class DokumenHtnController extends Controller
      */
     public function index()
     {
-        $dokumen_htn = DokumenHtn::all();
+        $dokumen_htn = DokumenHtn::paginate(10);
         return view('page.dokumen_htn.index', compact('dokumen_htn'));
     }
 

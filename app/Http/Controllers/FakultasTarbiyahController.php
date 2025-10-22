@@ -32,7 +32,7 @@ class FakultasTarbiyahController extends Controller
 
         FakultasTarbiyah::create($validated);
 
-        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen BKPI berhasil ditambahkan.');
+        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
@@ -55,13 +55,13 @@ class FakultasTarbiyahController extends Controller
 
         $item->update($validated);
 
-        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen BKPI berhasil diperbarui.');
+        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $item = FakultasTarbiyah::findOrFail($id);
         $item->delete();
-        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen BKPI berhasil dihapus.');
+        return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen berhasil dihapus.');
     }
 }

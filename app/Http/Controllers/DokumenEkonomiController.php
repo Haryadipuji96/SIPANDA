@@ -12,7 +12,7 @@ class DokumenEkonomiController extends Controller
      */
     public function index()
     {
-        $dokumen = DokumenEkonomi::all();
+        $dokumen = DokumenEkonomi::paginate(10);
         return view('page.ekonomi.index', compact('dokumen'));
     }
 
@@ -77,7 +77,7 @@ class DokumenEkonomiController extends Controller
 
         $dokumen_ekonomi->update($data);
 
-        return redirect()->route('dokumen-ekonomi.index')->with('success', 'Dokumen berhasil diperbarui!');
+        return redirect()->route('dokumen-ekonomi.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     /**
@@ -86,6 +86,6 @@ class DokumenEkonomiController extends Controller
     public function destroy(DokumenEkonomi $dokumen_ekonomi)
     {
         $dokumen_ekonomi->delete();
-        return redirect()->route('dokumen-ekonomi.index')->with('success', 'Dokumen berhasil dihapus!');
+        return redirect()->route('dokumen-ekonomi.index')->with('success', 'Data berhasil dihapus!');
     }
 }

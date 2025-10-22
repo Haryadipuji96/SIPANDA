@@ -13,7 +13,7 @@ class FakultasController extends Controller
      */
     public function index()
     {
-        $fakultas = Fakultas::all();
+        $fakultas = Fakultas::paginate(10);
         return view('page.fakultas.index', compact('fakultas'));
     }
 

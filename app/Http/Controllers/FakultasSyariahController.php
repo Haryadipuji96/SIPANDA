@@ -10,7 +10,7 @@ class FakultasSyariahController extends Controller
 {
     public function index()
     {
-        $fakultas_syariahs = FakultasSyariah::all();
+        $fakultas_syariahs = FakultasSyariah::paginate(10);
         return view('page.fakultas_syariahs.index', compact('fakultas_syariahs'));
     }
 

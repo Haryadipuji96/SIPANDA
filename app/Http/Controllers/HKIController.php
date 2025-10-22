@@ -13,7 +13,7 @@ class HKIController extends Controller
      */
      public function index()
     {
-        $hki = HKI::all();
+        $hki = HKI::paginate(10);
         return view('page.hki.index', compact('hki'));
     }
 

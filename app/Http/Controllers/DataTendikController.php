@@ -13,7 +13,7 @@ class DataTendikController extends Controller
      */
     public function index()
     {
-        $data_tendik = DataTendik::all();
+        $data_tendik = DataTendik::paginate(10);
         return view('page.data_tendik.index', compact('data_tendik'));
     }
 

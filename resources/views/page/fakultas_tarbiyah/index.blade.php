@@ -3,6 +3,13 @@
             [x-cloak] {
                 display: none !important;
             }
+
+            /* 🔹 Biar toast-nya lebih kecil dan elegan */
+            .swal2-popup.small-toast {
+                font-size: 0.85rem !important;
+                padding: 0.75rem 1rem !important;
+                min-width: 220px !important;
+            }
         </style>
 
         <div class="p-6" x-data="{ openTambah: false, editId: null }">
@@ -62,7 +69,7 @@
 
                                         <!-- Modal Edit -->
                                         <div x-show="editId === {{ $item->id }}" x-cloak
-                                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
                                             <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
                                                 <h2 class="text-lg font-bold mb-4">Edit Dokumen BKPI</h2>
                                                 <form action="{{ route('fakultas_tarbiyah.update', $item->id) }}"
@@ -118,19 +125,18 @@
                                         </div>
 
                                         <!-- Tombol Hapus -->
-                                        <form action="{{ route('fakultas_tarbiyah.destroy', $item->id) }}" method="POST"
-                                            class="inline">
+                                        <form action="{{ route('fakultas_tarbiyah.destroy', $item->id) }}"
+                                            method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" title="Hapus"
-                                                onclick="return confirm('Yakin ingin menghapus dokumen ini?')"
-                                                class="text-red-600 hover:text-red-700 transition">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
-                                                </svg>
-                                            </button>
+                                            <button type="button"
+                                            class="btn-hapus text-red-600 hover:text-red-700 transition" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
+                                            </svg>
+                                        </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -148,10 +154,11 @@
 
             <!-- Modal Tambah -->
             <div x-show="openTambah" x-cloak
-                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
                 <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
                     <h2 class="text-lg font-bold mb-4">Tambah Dokumen BKPI</h2>
-                    <form action="{{ route('fakultas_tarbiyah.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('fakultas_tarbiyah.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="text" name="judul_mou" placeholder="Judul MoU" required
                             class="w-full border px-2 py-1 mb-2 rounded text-sm">
@@ -178,4 +185,90 @@
                 </div>
             </div>
         </div>
+        <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ✅ Notifikasi sukses (pojok kanan atas)
+        @if (session('success'))
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f9fafb',
+                color: '#1f2937',
+                iconColor: '#22c55e',
+                customClass: {
+                    popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                },
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        @endif
+
+        // ✅ Notifikasi error
+        @if (session('error'))
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
+                background: '#fef2f2',
+                color: '#991b1b',
+                iconColor: '#ef4444',
+                customClass: {
+                    popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                }
+            });
+        @endif
+
+        // ✅ Konfirmasi hapus (masih modal besar, biar jelas)
+        document.querySelectorAll('.btn-hapus').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                let form = this.closest('form');
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus data ini?',
+                    text: 'Data yang sudah dihapus tidak bisa dikembalikan.',
+                    icon: 'warning',
+                    background: '#f9fafb',
+                    color: '#1f2937',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#9ca3af',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Menghapus data...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            background: '#f9fafb',
+                            color: '#1f2937',
+                            iconColor: '#3b82f6',
+                            customClass: {
+                                popup: 'small-toast shadow-lg rounded-xl border border-gray-200'
+                            }
+                        });
+
+                        setTimeout(() => form.submit(), 1000);
+                    }
+                });
+            });
+        });
+    </script>
     </x-app-layout>
