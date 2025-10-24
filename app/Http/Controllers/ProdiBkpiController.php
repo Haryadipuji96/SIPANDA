@@ -9,9 +9,10 @@ class ProdiBkpiController extends Controller
 {
     public function index()
     {
-        $data = ProdiBkpi::latest()->get();
+        $data = ProdiBkpi::paginate(10);
         return view('page.prodi_bkpi.index', compact('data'));
     }
+
 
     public function store(Request $request)
     {

@@ -13,7 +13,7 @@ class DokumenBaController extends Controller
      */
     public function index()
     {
-        $dokumen_ba = DokumenBa::all();
+        $dokumen_ba = DokumenBa::paginate(10);
         return view('page.dokumen_ba.index', compact('dokumen_ba'));
     }
 

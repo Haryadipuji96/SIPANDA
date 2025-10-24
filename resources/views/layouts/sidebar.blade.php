@@ -81,7 +81,7 @@
                                         </a>
                                         <a href="{{ route('fakultas.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm">
-                                            Fakultas
+                                            Fakultas Ekonomi
                                         </a>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
                                         </a>
                                         <a href="{{ route('fakultas_tarbiyah.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            Fakultas
+                                            Fakultas Tarbiyah
                                         </a>
                                         <a href="{{ route('dokumen_mpi.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">

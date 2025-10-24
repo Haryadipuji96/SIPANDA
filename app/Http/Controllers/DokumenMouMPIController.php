@@ -13,7 +13,7 @@ class DokumenMouMPIController extends Controller
      */
     public function index()
     {
-        $dokumen_mpi = DokumenMou_MPI::all();
+        $dokumen_mpi = DokumenMou_MPI::paginate(10);
         return view('page.dokumen_mpi.index', compact('dokumen_mpi'));
     }
 

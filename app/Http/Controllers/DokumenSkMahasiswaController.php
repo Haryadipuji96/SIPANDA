@@ -13,7 +13,7 @@ class DokumenSkMahasiswaController extends Controller
      */
     public function index()
     {
-        $dokumen_sk_mahasiswa = DokumenSkMahasiswa::all();
+        $dokumen_sk_mahasiswa = DokumenSkMahasiswa::paginate(10);
         return view('page.dokumen_sk_mahasiswa.index', compact('dokumen_sk_mahasiswa'));
     }
 

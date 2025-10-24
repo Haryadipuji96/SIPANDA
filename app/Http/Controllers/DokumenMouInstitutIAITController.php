@@ -13,7 +13,7 @@ class DokumenMouInstitutIAITController extends Controller
      */
     public function index()
     {
-        $dokumen_iait = DokumenMouInstitutIAIT::all();
+        $dokumen_iait = DokumenMouInstitutIAIT::paginate(10);
         return view('page.dokumen_institutIAIT.index', compact('dokumen_iait'));
     }
 

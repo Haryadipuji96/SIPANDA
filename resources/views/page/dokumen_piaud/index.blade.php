@@ -3,29 +3,37 @@
         [x-cloak] {
             display: none !important;
         }
+
         /* 🔹 Biar toast-nya lebih kecil dan elegan */
         .swal2-popup.small-toast {
             font-size: 0.85rem !important;
             padding: 0.75rem 1rem !important;
             min-width: 220px !important;
         }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 
     <div class="p-6" x-data="{ openTambah: false, editId: null }">
         <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">📂 Dokumen MoU PIAUD</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    📂 Dokumen MoU PIAUD</h1>
                 <button @click="openTambah = true"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition">
+                    class="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition duration-200 ease-in-out transform hover:scale-105">
                     + Tambah Dokumen
                 </button>
             </div>
 
             <!-- Tabel -->
-            <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <div class="table-wrapper border border-gray-200 rounded-lg">
                 <table class="w-full text-sm border-collapse">
                     <thead class="bg-green-600 text-white">
                         <tr>
+                            <th class="px-4 py-2 border">No</th>
                             <th class="px-4 py-2 border">Judul Dokumen</th>
                             <th class="px-4 py-2 border">Nomor MoU</th>
                             <th class="px-4 py-2 border">Tanggal MoU</th>
@@ -38,6 +46,7 @@
                     <tbody>
                         @forelse ($dokumen_piaud as $index => $item)
                             <tr class="{{ $index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100' }}">
+                                <td class="border px-4 py-2 text-center">{{ $dokumen_piaud->firstItem() + $index }}</td>
                                 <td class="border px-4 py-2">{{ $item->judul_dokumen }}</td>
                                 <td class="border px-4 py-2 text-center">{{ $item->nomor_mou ?? '-' }}</td>
                                 <td class="border px-4 py-2">{{ $item->tanggal_mou ?? '-' }}</td>
@@ -52,90 +61,92 @@
                                     @endif
                                 </td>
 
-                                <td class="border px-4 py-2 text-center space-x-2">
-                                    <!-- Tombol Edit -->
-                                    <button @click="editId = {{ $item->id }}"
-                                        class="text-yellow-500 hover:text-yellow-600 transition" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                        </svg>
-                                    </button>
-
-                                    <!-- Modal Edit -->
-                                    <div x-show="editId === {{ $item->id }}" x-cloak
-                                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
-                                        <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
-                                            <h2 class="text-lg font-bold mb-4">Edit Dokumen</h2>
-                                            <form action="{{ route('dokumen_piaud.update', $item->id) }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                @method('PUT')
-
-                                                <input type="text" name="judul_dokumen"
-                                                    value="{{ $item->judul_dokumen }}" required
-                                                    class="w-full border px-2 py-1 mb-2 rounded text-sm">
-
-                                                <input type="text" name="nomor_mou" value="{{ $item->nomor_mou }}"
-                                                    class="w-full border px-2 py-1 mb-2 rounded text-sm">
-
-                                                <input type="date" name="tanggal_mou"
-                                                    value="{{ $item->tanggal_mou }}"
-                                                    class="w-full border px-2 py-1 mb-2 rounded text-sm">
-
-                                                <input type="text" name="pihak_kerjasama"
-                                                    value="{{ $item->pihak_kerjasama }}"
-                                                    class="w-full border px-2 py-1 mb-2 rounded text-sm">
-
-                                                <textarea name="keterangan" class="w-full border px-2 py-1 mb-2 rounded text-sm">{{ $item->keterangan }}</textarea>
-                                                <input type="file" name="file_dokumen" class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-
-                                                @if ($item->file_dokumen)
-                                                    <p class="mb-2 text-start mt-3">
-                                                        File lama:
-                                                        <a href="{{ asset('storage/' . $item->file_dokumen) }}"
-                                                            target="_blank" class="text-blue-600 underline">Lihat
-                                                            File</a>
-                                                    </p>
-                                                @endif
-
-                                                
-
-                                                <div class="flex justify-end space-x-2">
-                                                    <button type="button" @click="editId = null"
-                                                        class="px-3 py-1 bg-gray-400 rounded text-sm">Batal</button>
-                                                    <button type="submit"
-                                                        class="px-3 py-1 bg-green-600 text-white rounded text-sm">Simpan</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tombol Hapus -->
-                                    <form action="{{ route('dokumen_piaud.destroy', $item->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button"
-                                            class="btn-hapus text-red-600 hover:text-red-700 transition" title="Hapus">
+                                <td class="border px-4 py-2 text-center">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <!-- Edit -->
+                                        <button @click="editId = {{ $item->id }}"
+                                            class="p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full transition"
+                                            title="Edit">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
+                                                    d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
                                         </button>
-                                    </form>
+
+                                        <!-- Hapus -->
+                                        <form action="{{ route('dokumen_piaud.destroy', $item) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                class="btn-hapus p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-full transition"
+                                                title="Hapus">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
+                            <!-- Modal Edit -->
+                            <div x-show="editId === {{ $item->id }}" x-cloak
+                                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
+                                <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
+                                    <h2 class="text-lg font-bold mb-4">Edit Dokumen</h2>
+                                    <form action="{{ route('dokumen_piaud.update', $item->id) }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <input type="text" name="judul_dokumen" value="{{ $item->judul_dokumen }}"
+                                            required class="w-full border px-2 py-1 mb-2 rounded text-sm">
+
+                                        <input type="text" name="nomor_mou" value="{{ $item->nomor_mou }}"
+                                            class="w-full border px-2 py-1 mb-2 rounded text-sm">
+
+                                        <input type="date" name="tanggal_mou" value="{{ $item->tanggal_mou }}"
+                                            class="w-full border px-2 py-1 mb-2 rounded text-sm">
+
+                                        <input type="text" name="pihak_kerjasama"
+                                            value="{{ $item->pihak_kerjasama }}"
+                                            class="w-full border px-2 py-1 mb-2 rounded text-sm">
+
+                                        <textarea name="keterangan" class="w-full border px-2 py-1 mb-2 rounded text-sm">{{ $item->keterangan }}</textarea>
+                                        <input type="file" name="file_dokumen"
+                                            class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+                                        @if ($item->file_dokumen)
+                                            <p class="mb-2 text-start mt-3">
+                                                File lama:
+                                                <a href="{{ asset('storage/' . $item->file_dokumen) }}" target="_blank"
+                                                    class="text-blue-600 underline">Lihat
+                                                    File</a>
+                                            </p>
+                                        @endif
+
+
+
+                                        <div class="flex justify-end space-x-2">
+                                            <button type="button" @click="editId = null"
+                                                class="px-3 py-1 bg-gray-400 rounded text-sm">Batal</button>
+                                            <button type="submit"
+                                                class="px-3 py-1 bg-green-600 text-white rounded text-sm">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-gray-500 bg-gray-50">Belum ada data</td>
+                                <td colspan="6" class="text-center py-3 text-gray-600">Belum ada data</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+            @include('components.pagination', ['data' => $dokumen_piaud])
         </div>
 
         <!-- Modal Tambah -->
@@ -160,7 +171,8 @@
 
                     <textarea name="keterangan" placeholder="Keterangan" class="w-full border px-2 py-1 mb-2 rounded text-sm"></textarea>
 
-                    <input type="file" name="file_dokumen" class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="file" name="file_dokumen"
+                        class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 
                     <div class="flex justify-end space-x-2 mt-3">
                         <button type="button" @click="openTambah = false"

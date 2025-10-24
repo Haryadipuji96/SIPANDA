@@ -13,7 +13,7 @@ class DataSarprasController extends Controller
      */
     public function index()
     {
-        $data_sarpras = DataSarpras::all();
+        $data_sarpras = DataSarpras::paginate(10);
         return view('page.data_sarpras.index', compact('data_sarpras'));
     }
 

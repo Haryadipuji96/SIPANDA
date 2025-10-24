@@ -10,7 +10,7 @@ class DokumenMouPascasarjanaController extends Controller
 {
     public function index()
     {
-        $dokumen_pascasarjana = DokumenMouPascasarjana::all();
+        $dokumen_pascasarjana = DokumenMouPascasarjana::paginate(10);
         return view('page.dokumen_pascasarjana.index', compact('dokumen_pascasarjana'));
     }
 

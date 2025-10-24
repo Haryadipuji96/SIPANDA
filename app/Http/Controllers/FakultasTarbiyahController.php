@@ -9,7 +9,7 @@ class FakultasTarbiyahController extends Controller
 {
     public function index()
     {
-        $data = FakultasTarbiyah::latest()->get();
+        $data = FakultasTarbiyah::paginate(10);
         return view('page.fakultas_tarbiyah.index', compact('data'));
     }
 

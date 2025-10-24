@@ -11,7 +11,7 @@ class HKIController extends Controller
     /**
      * Display a listing of the resource.
      */
-     public function index()
+    public function index()
     {
         $hki = HKI::paginate(10);
         return view('page.hki.index', compact('hki'));
@@ -28,7 +28,7 @@ class HKIController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_dokumen_kegiatan' => 'required|string|max:255',
@@ -92,7 +92,7 @@ class HKIController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-   public function destroy($id)
+    public function destroy($id)
     {
         $hki = HKI::findOrFail($id);
         if ($hki->file) {
@@ -101,5 +101,25 @@ class HKIController extends Controller
         $hki->delete();
 
         return redirect()->route('hki.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = HKI::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        HKI::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

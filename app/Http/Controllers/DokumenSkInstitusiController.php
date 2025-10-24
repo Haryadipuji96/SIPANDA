@@ -14,7 +14,7 @@ class DokumenSkInstitusiController extends Controller
      */
     public function index()
     {
-        $dokumen_sk_institusi = DokumenSkInstitusi::all();
+        $dokumen_sk_institusi = DokumenSkInstitusi::paginate(10);
         return view('page.dokumen_sk_institusi.index', compact('dokumen_sk_institusi'));
     }
 

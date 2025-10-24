@@ -14,7 +14,7 @@ class DokumenMouPGMIController extends Controller
      */
     public function index()
     {
-        $dokumen_pgmi = DokumenMouPGMI::all();
+        $dokumen_pgmi = DokumenMouPGMI::paginate(10);
         return view('page.dokumen_pgmi.index', compact('dokumen_pgmi'));
     }
 

@@ -14,7 +14,7 @@ class DokumenMouPAIController extends Controller
      */
     public function index()
     {
-        $dokumen_pai = DokumenMouPAI::all();
+        $dokumen_pai = DokumenMouPAI::paginate(10);
         return view('page.dokumen_pai.index', compact('dokumen_pai'));
     }
 

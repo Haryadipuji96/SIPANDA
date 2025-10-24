@@ -191,17 +191,16 @@
         .modal-overlay {
             z-index: 9999 !important;
         }
+
+        #pageLoader {
+            transition: opacity 0.3s ease;
+        }
+
+        #pageLoader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
-    
-    <script>
-        // Immediate hide untuk x-cloak elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('[x-cloak]');
-            elements.forEach(el => {
-                el.style.display = 'none';
-            });
-        });
-    </script>
 </head>
 
 <body class="font-sans antialiased"
@@ -209,7 +208,7 @@
     <div class="h-screen bg-gray-100/40 dark:bg-gray-900/70 flex overflow-hidden" x-data="{
         sidebarOpen: false,
         initialized: false,
-        
+    
         init() {
             // Set initial state dari localStorage atau screen size
             const savedState = localStorage.getItem('sidebarOpen');
@@ -218,17 +217,17 @@
             } else {
                 this.sidebarOpen = window.innerWidth >= 768;
             }
-            
+    
             // Tandai sudah initialized
             this.initialized = true;
-            
+    
             // Simpan state changes
             this.$watch('sidebarOpen', (value) => {
                 if (this.initialized) {
                     localStorage.setItem('sidebarOpen', value);
                 }
             });
-            
+    
             // Handle resize dengan proper cleanup
             const handleResize = () => {
                 if (window.innerWidth >= 768) {
@@ -237,34 +236,24 @@
                     this.sidebarOpen = false;
                 }
             };
-            
+    
             window.addEventListener('resize', handleResize);
         }
     }" x-cloak>
 
         <!-- Sidebar Overlay untuk Mobile -->
         <div class="sidebar-overlay" :class="{ 'active': sidebarOpen && window.innerWidth < 768 }"
-            x-show="sidebarOpen && window.innerWidth < 768" 
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            @click="sidebarOpen = false"
-            x-cloak>
+            x-show="sidebarOpen && window.innerWidth < 768" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" @click="sidebarOpen = false" x-cloak>
         </div>
 
         <!-- Sidebar Modal -->
-        <aside class="sidebar-modal text-white h-screen flex flex-col z-50" 
-            x-show="sidebarOpen"
-            x-transition:enter="transition ease-in-out duration-300"
-            x-transition:enter-start="-translate-x-full"
-            x-transition:enter-end="translate-x-0"
-            x-transition:leave="transition ease-in-out duration-300"
-            x-transition:leave-start="translate-x-0"
-            x-transition:leave-end="-translate-x-full"
-            x-cloak>
+        <aside class="sidebar-modal text-white h-screen flex flex-col z-50" x-show="sidebarOpen"
+            x-transition:enter="transition ease-in-out duration-300" x-transition:enter-start="-translate-x-full"
+            x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300"
+            x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" x-cloak>
 
             <!-- Tombol Close di dalam sidebar (hanya mobile) -->
             <button @click="sidebarOpen = false" class="sidebar-close-btn md:hidden"
@@ -273,18 +262,17 @@
             </button>
 
             <!-- Konten Sidebar dengan auto-close untuk mobile -->
-            <div class="flex-1 overflow-hidden sidebar-scroll" 
-                 x-data="{
-                    closeSidebarOnClick() {
-                        if (window.innerWidth < 768) {
-                            // Dapatkan instance Alpine.js utama
-                            const mainAlpineElement = document.querySelector('[x-data]');
-                            if (mainAlpineElement && mainAlpineElement.__x) {
-                                Alpine.$data(mainAlpineElement).sidebarOpen = false;
-                            }
+            <div class="flex-1 overflow-hidden sidebar-scroll" x-data="{
+                closeSidebarOnClick() {
+                    if (window.innerWidth < 768) {
+                        // Dapatkan instance Alpine.js utama
+                        const mainAlpineElement = document.querySelector('[x-data]');
+                        if (mainAlpineElement && mainAlpineElement.__x) {
+                            Alpine.$data(mainAlpineElement).sidebarOpen = false;
                         }
                     }
-                 }">
+                }
+            }">
                 <!-- Include sidebar content dengan event listener -->
                 <div @click="closeSidebarOnClick()">
                     @include('layouts.sidebar')
@@ -312,9 +300,69 @@
                         <span class="hidden sm:inline">{{ config('app.name', 'SIPANDA') }}</span>
                         <span class="sm:hidden">SIPANDA</span>
                     </div>
+
                 </div>
 
                 <div class="flex items-center space-x-4 md:space-x-6">
+                    <form action="{{ route('search') }}" method="GET" id="globalSearchForm"
+                        class="flex items-center max-w-lg mx-auto">
+
+                        <label for="voice-search" class="sr-only">Search</label>
+                        <div class="relative w-full">
+
+                            {{-- 🔍 Icon di kiri --}}
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true" class="w-4 h-4 text-gray-500">
+                                    <path
+                                        d="M11.15 5.6h.01m3.337 1.913h.01m-6.979 0h.01M5.541 11h.01M15 15h2.706a1.957 1.957 0 0 0 1.883-1.325A9 9 0 1 0 2.043 11.89 9.1 9.1 0 0 0 7.2 19.1a8.62 8.62 0 0 0 3.769.9A2.013 2.013 0 0 0 13 18v-.857A2.034 2.034 0 0 1 15 15Z"
+                                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                                        stroke="currentColor"></path>
+                                </svg>
+                            </div>
+
+                            {{-- 🔹 Input pencarian --}}
+                            <input type="text" name="search" required value="{{ request('search') }}"
+                                placeholder="Cari apapun..."
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                focus:ring-green-500 focus:border-green-500 block w-full ps-10 p-2.5 
+                dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
+                dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
+
+                            {{-- 🎤 Icon di kanan (opsional) --}}
+                            <button type="button" class="absolute inset-y-0 end-0 flex items-center pe-3">
+                                <svg viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                    class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                    <path
+                                        d="M15 7v3a5.006 5.006 0 0 1-5 5H6a5.006 5.006 0 0 1-5-5V7m7 9v3m-3 0h6M7 1h2a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3Z"
+                                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+                                        stroke="currentColor"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        {{-- 🔘 Tombol submit --}}
+                        <button type="submit" id="searchButton"
+                            class="inline-flex items-center py-2.5 px-3 ms-2 text-sm font-medium text-white 
+            bg-green-500 rounded-lg border border-green-500 hover:bg-green-600 
+            focus:ring-4 focus:outline-none focus:ring-green-300">
+                            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="w-4 h-4 me-2">
+                                <path d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" stroke-width="2"
+                                    stroke-linejoin="round" stroke-linecap="round" stroke="currentColor"></path>
+                            </svg>
+                            Cari
+                        </button>
+
+                        {{-- 🌀 Loader Spinner --}}
+                        <div id="searchLoader"
+                            class="hidden ml-2 w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin">
+                        </div>
+                    </form>
+
+
+
                     <!-- Notifikasi -->
                     <button class="relative text-gray-800 hover:text-green-800 hover-scale">
                         <i class="fa-regular fa-bell text-lg md:text-xl"></i>
@@ -400,6 +448,17 @@
         </div>
     </div>
 
+
+    <script>
+        // Immediate hide untuk x-cloak elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('[x-cloak]');
+            elements.forEach(el => {
+                el.style.display = 'none';
+            });
+        });
+    </script>
+
     <script>
         // Prevent body scroll when sidebar is open on mobile
         document.addEventListener('alpine:init', () => {
@@ -458,7 +517,7 @@
             document.addEventListener('click', function(e) {
                 const link = e.target.closest('a');
                 const sidebar = e.target.closest('.sidebar-modal');
-                
+
                 // Jika yang di-klik adalah link di dalam sidebar DAN di mobile
                 if (link && sidebar && window.innerWidth < 768) {
                     // Tunggu sedikit untuk memastikan click event diproses
@@ -470,7 +529,7 @@
             document.addEventListener('click', function(e) {
                 const dropdownItem = e.target.closest('.dropdown-item, [x-data] a');
                 const sidebar = e.target.closest('.sidebar-modal');
-                
+
                 if (dropdownItem && sidebar && window.innerWidth < 768) {
                     setTimeout(closeSidebar, 100);
                 }
@@ -517,5 +576,37 @@
             });
         });
     </script>
+
+    <script>
+        document.getElementById('globalSearchForm').addEventListener('submit', function(e) {
+            const pageLoader = document.getElementById('pageLoader');
+
+            // Tampilkan overlay spinner
+            pageLoader.classList.remove('hidden');
+
+            // Supaya spinner sempat kelihatan
+            e.preventDefault();
+            setTimeout(() => this.submit(), 3000);
+        });
+    </script>
+
+    <!-- 🌿 Global Page Loader -->
+    <div id="pageLoader"
+        class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-[9999]">
+
+        <!-- 🔹 Spinner Keren dari SmookyDev -->
+        <div
+            class="w-32 aspect-square rounded-full relative flex justify-center items-center animate-[spin_3s_linear_infinite] z-40 bg-[conic-gradient(white_0deg,white_300deg,transparent_270deg,transparent_360deg)]
+        before:animate-[spin_2s_linear_infinite] before:absolute before:w-[60%] before:aspect-square before:rounded-full before:z-[80]
+        before:bg-[conic-gradient(white_0deg,white_270deg,transparent_180deg,transparent_360deg)]
+        after:absolute after:w-3/4 after:aspect-square after:rounded-full after:z-[60]
+        after:animate-[spin_3s_linear_infinite]
+        after:bg-[conic-gradient(#065f46_0deg,#065f46_180deg,transparent_180deg,transparent_360deg)]">
+            <span
+                class="absolute w-[85%] aspect-square rounded-full z-[60] animate-[spin_5s_linear_infinite]
+            bg-[conic-gradient(#34d399_0deg,#34d399_180deg,transparent_180deg,transparent_360deg)]">
+            </span>
+        </div>
+    </div>
 </body>
 </html>

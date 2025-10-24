@@ -13,7 +13,7 @@ class DokumenMouPIAUDController extends Controller
      */
     public function index()
     {
-        $dokumen_piaud = DokumenMoU_PIAUD::all();
+        $dokumen_piaud = DokumenMoU_PIAUD::paginate(10);
         return view('page.dokumen_piaud.index', compact('dokumen_piaud'));
     }
 

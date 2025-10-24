@@ -58,7 +58,7 @@ class DokumenHtnController extends Controller
         ]);
 
         return redirect()->route('dokumen_htn.index')
-                         ->with('success', 'Data berhasil ditambahkan');
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -107,7 +107,7 @@ class DokumenHtnController extends Controller
         $dokumen_htn->update($data);
 
         return redirect()->route('dokumen_htn.index')
-                         ->with('success', 'Data berhasil diupdate');
+            ->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -125,6 +125,25 @@ class DokumenHtnController extends Controller
         $dokumen_htn->delete();
 
         return redirect()->route('dokumen_htn.index')
-                         ->with('success', 'Data berhasil dihapus');
+            ->with('success', 'Data berhasil dihapus');
+    }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = DokumenHtn::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        DokumenHtn::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

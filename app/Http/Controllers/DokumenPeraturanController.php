@@ -13,7 +13,7 @@ class DokumenPeraturanController extends Controller
      */
     public function index()
     {
-        $dokumen_peraturan = DokumenPeraturan::all();
+        $dokumen_peraturan = DokumenPeraturan::paginate(10);
         return view('page.dokumen_peraturan.index', compact('dokumen_peraturan'));
     }
 

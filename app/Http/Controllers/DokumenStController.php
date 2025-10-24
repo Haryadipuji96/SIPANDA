@@ -13,7 +13,7 @@ class DokumenStController extends Controller
      */
     public function index()
     {
-        $dokumen_st = DokumenSt::all();
+        $dokumen_st = DokumenSt::paginate(10);
         return view('page.dokumen_st.index', compact('dokumen_st'));
     }
 

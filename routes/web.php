@@ -23,6 +23,7 @@ use App\Http\Controllers\DokumenPeraturanController;
 use App\Http\Controllers\DokumenSkInstitusiController;
 use App\Http\Controllers\DokumenSkMahasiswaController;
 use App\Http\Controllers\DokumenStController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,11 +39,20 @@ Route::get('/dashboard', function () {
 //     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 // });
 
+// Route Checkbok
+Route::delete('/fakultas/bulk-delete', [FakultasController::class, 'bulkDelete'])->name('fakultas.bulkDelete');
+Route::delete('/dokumen-ekonomi/bulk-delete', [DokumenEkonomiController::class, 'bulkDelete'])->name('dokumen-ekonomi.bulkDelete');
+Route::delete('/fakultas_syariahs/bulk-delete', [FakultasSyariahController::class, 'bulkDelete'])->name('fakultas_syariahs.bulkDelete');
+Route::delete('/data_tendik/bulk-delete', [DataTendikController::class, 'bulkDelete'])->name('data_tendik.bulkDelete');
+Route::delete('/hki/bulk-delete', [HKIController::class, 'bulkDelete'])->name('hki.bulkDelete');
+Route::delete('/dokumen_htn/bulk-delete', [DokumenHtnController::class, 'bulkDelete'])->name('dokumen_htn.bulkDelete');
+
 
 Route::get('/activity-report', function () {
     return view('page.reports.activity');
 })->name('activity.report');
 
+Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
 
 Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->middleware(['auth', 'verified']);
