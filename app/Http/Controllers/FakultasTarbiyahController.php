@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\FakultasTarbiyah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FakultasTarbiyahController extends Controller
 {
     public function index()
     {
-        $data = FakultasTarbiyah::paginate(10);
-        return view('page.fakultas_tarbiyah.index', compact('data'));
+        $fakultas_tarbiyah = FakultasTarbiyah::paginate(10);
+        return view('page.fakultas_tarbiyah.index', compact('fakultas_tarbiyah'));
     }
 
     public function store(Request $request)
@@ -63,5 +64,25 @@ class FakultasTarbiyahController extends Controller
         $item = FakultasTarbiyah::findOrFail($id);
         $item->delete();
         return redirect()->route('fakultas_tarbiyah.index')->with('success', 'Dokumen berhasil dihapus.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = FakultasTarbiyah::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        FakultasTarbiyah::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

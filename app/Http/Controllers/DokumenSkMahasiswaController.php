@@ -122,4 +122,24 @@ class DokumenSkMahasiswaController extends Controller
         return redirect()->route('dokumen_sk_mahasiswa.index')
             ->with('success', 'Data berhasil dihapus');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = DokumenSkMahasiswa::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        DokumenSkMahasiswa::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
+    }
 }

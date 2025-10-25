@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $highlight = request('highlight'); // ambil dari query string ?highlight=...
+    @endphp
     <style>
         [x-cloak] {
             display: none !important;
@@ -15,6 +18,48 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+
+        /* ubah warna centang jadi hijau */
+        input[type="checkbox"]:checked {
+            accent-color: #16a34a;
+            /* green-600 */
+        }
+
+        /* kalau accent-color gak didukung browser */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* checkbox biar gak ganggu */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* 🔥 Efek highlight cepat (1 detik, pudar halus) */
+        @keyframes fadeHighlight {
+            0% {
+                background-color: #fde68a;
+                /* kuning terang */
+            }
+
+            70% {
+                background-color: #fef3c7;
+                /* kuning lembut */
+            }
+
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        .fade-once {
+            animation: fadeHighlight 5s ease-out forwards;
+            /* 1 detik aja */
+        }
     </style>
     <div class="p-6" x-data="{ openTambah: false, editId: null }" x-cloak>
         <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -26,129 +71,162 @@
                 </button>
             </div>
 
-            <!-- ✅ Tabel -->
-            <div class="table-wrapper border border-gray-200 rounded-lg">
-                <table class="w-full text-sm border-collapse">
-                    <thead class="bg-green-600 text-white">
-                        <tr>
-                            <th class="px-4 py-2 border">No</th>
-                            <th class="border px-4 py-2">Judul</th>
-                            <th class="border px-4 py-2">Nomor</th>
-                            <th class="border px-4 py-2">Tanggal</th>
-                            <th class="border px-4 py-2">Tempat</th>
-                            <th class="border px-4 py-2">Pihak Terlibat</th>
-                            <th class="border px-4 py-2">Keterangan</th>
-                            <th class="border px-4 py-2">File</th>
-                            <th class="border px-4 py-2">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($dokumen_ba as $index => $item)
-                            <tr class="{{ $index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100' }}">
-                                <td class="border px-4 py-2 text-center">{{ $dokumen_ba->firstItem() + $index }}</td>
-                                <td class="border px-4 py-2">{{ $item->judul }}</td>
-                                <td class="border px-4 py-2 text-center">{{ $item->nomor_ba ?? '-' }}</td>
-                                <td class="border px-4 py-2">{{ $item->tanggal_ba ?? '-' }}</td>
-                                <td class="border px-4 py-2">{{ $item->tempat ?? '-' }}</td>
-                                <td class="border px-4 py-2">{{ $item->pihak_terlibat ?? '-' }}</td>
-                                <td class="border px-4 py-2">{{ $item->keterangan ?? '-' }}</td>
-                                <td class="border px-4 py-2 text-center">
-                                    @if ($item->file_dokumen)
-                                        <a href="{{ asset('storage/' . $item->file_dokumen) }}" target="_blank"
-                                            class="text-blue-600 underline">Lihat</a>
-                                    @else
-                                        <span class="text-gray-500">-</span>
-                                    @endif
-                                </td>
-                                <td class="border px-4 py-2 text-center">
-                                    <div class="flex items-center justify-center gap-3">
-                                        <!-- Edit -->
-                                        <button @click="editId = {{ $item->id }}"
-                                            class="p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full transition"
-                                            title="Edit">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </button>
+            <form id="bulkDeleteForm" action="{{ route('dokumen_ba.bulkDelete') }}" method="POST">
+                @csrf
+                @method('DELETE')
 
-                                        <!-- Hapus -->
-                                        <form action="{{ route('dokumen_ba.destroy', $item) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                class="btn-hapus p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-full transition"
-                                                title="Hapus">
+                <div class="flex justify-between items-center mb-2">
+                    <button type="submit"
+                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
+                        id="deleteSelected" disabled>
+                        Hapus Terpilih
+                    </button>
+                </div>
+
+
+                <!-- ✅ Tabel -->
+                <div class="table-wrapper border border-gray-200 rounded-lg">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-green-600 text-white">
+                            <tr>
+                                <th class="px-4 py-2 border text-center">
+                                    <input type="checkbox" id="selectAll"
+                                        class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
+                                </th>
+                                <th class="px-4 py-2 border">No</th>
+                                <th class="border px-4 py-2">Judul</th>
+                                <th class="border px-4 py-2">Nomor</th>
+                                <th class="border px-4 py-2">Tanggal</th>
+                                <th class="border px-4 py-2">Tempat</th>
+                                <th class="border px-4 py-2">Pihak Terlibat</th>
+                                <th class="border px-4 py-2">Keterangan</th>
+                                <th class="border px-4 py-2">File</th>
+                                <th class="border px-4 py-2">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($dokumen_ba as $index => $item)
+                                <tr id="row-{{ $item->id }}"
+                                    class="
+                                    {{ $index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100' }}
+                                    {{ $highlight &&
+                                    (str_contains(strtolower($item->judul), strtolower($highlight)) ||
+                                        str_contains(strtolower($item->nomor_ba ?? ''), strtolower($highlight)) ||
+                                        str_contains(strtolower($item->tanggal_ba ?? ''), strtolower($highlight)))
+                                        ? 'fade-once'
+                                        : '' }}">
+                                    <td class="border px-4 py-2 text-center">
+                                        <input type="checkbox" name="ids[]" value="{{ $item->id }}"
+                                            class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
+                                    </td>
+                                    <td class="border px-4 py-2 text-center">{{ $dokumen_ba->firstItem() + $index }}
+                                    </td>
+                                    <td class="border px-4 py-2">{{ $item->judul }}</td>
+                                    <td class="border px-4 py-2 text-center">{{ $item->nomor_ba ?? '-' }}</td>
+                                    <td class="border px-4 py-2">{{ $item->tanggal_ba ?? '-' }}</td>
+                                    <td class="border px-4 py-2">{{ $item->tempat ?? '-' }}</td>
+                                    <td class="border px-4 py-2">{{ $item->pihak_terlibat ?? '-' }}</td>
+                                    <td class="border px-4 py-2">{{ $item->keterangan ?? '-' }}</td>
+                                    <td class="border px-4 py-2 text-center">
+                                        @if ($item->file_dokumen)
+                                            <a href="{{ asset('storage/' . $item->file_dokumen) }}" target="_blank"
+                                                class="text-blue-600 underline">Lihat</a>
+                                        @else
+                                            <span class="text-gray-500">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="border px-4 py-2 text-center">
+                                        <div class="flex items-center justify-center gap-3">
+                                            <!-- Edit -->
+                                            <button type="button" @click="editId = {{ $item->id }}"
+                                                class="p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full transition"
+                                                title="Edit">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
+                                                        d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                 </svg>
                                             </button>
+
+                                            <!-- Hapus -->
+                                            <form action="{{ route('dokumen_ba.destroy', $item) }}" method="POST"
+                                                class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
+                                                    class="btn-hapus p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-full transition"
+                                                    title="Hapus">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- ✅ Modal Edit -->
+                                <div x-show="editId === {{ $item->id }}" x-cloak
+                                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
+                                    <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
+                                        <h2 class="text-lg font-bold mb-4 text-gray-700">Edit Dokumen</h2>
+                                        <form action="{{ route('dokumen_ba.update', $item->id) }}" method="POST"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <input type="text" name="judul" value="{{ $item->judul }}" required
+                                                class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
+                                            <input type="text" name="nomor_ba" value="{{ $item->nomor_ba }}"
+                                                class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
+                                            <input type="date" name="tanggal_ba" value="{{ $item->tanggal_ba }}"
+                                                class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
+                                            <input type="text" name="tempat" value="{{ $item->tempat }}"
+                                                class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
+                                            <textarea name="pihak_terlibat" class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">{{ $item->pihak_terlibat }}</textarea>
+                                            <textarea name="keterangan" class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">{{ $item->keterangan }}</textarea>
+
+                                            <!-- ✅ File Upload -->
+                                            <label class="block text-sm font-semibold text-gray-600 mb-1">Ganti File
+                                                (opsional)
+                                            </label>
+                                            <input type="file" name="file_dokumen"
+                                                class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+                                            @if ($item->file_dokumen)
+                                                <div class="text-xs text-blue-600 mt-1">
+                                                    File saat ini:
+                                                    <a href="{{ asset('storage/' . $item->file_dokumen) }}"
+                                                        target="_blank" class="underline hover:text-blue-800">Lihat
+                                                        Dokumen</a>
+                                                </div>
+                                            @endif
+
+                                            <div class="flex justify-end space-x-2 mt-4">
+                                                <button type="button" @click="editId = null"
+                                                    class="px-3 py-1 bg-gray-400 rounded text-sm text-white">
+                                                    Batal
+                                                </button>
+                                                <button type="submit"
+                                                    class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">
+                                                    Simpan
+                                                </button>
+                                            </div>
                                         </form>
                                     </div>
-                                </td>
-                            </tr>
-
-                            <!-- ✅ Modal Edit -->
-                            <div x-show="editId === {{ $item->id }}" x-cloak
-                                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay">
-                                <div class="bg-white p-6 rounded-lg w-96 shadow-lg">
-                                    <h2 class="text-lg font-bold mb-4 text-gray-700">Edit Dokumen</h2>
-                                    <form action="{{ route('dokumen_ba.update', $item->id) }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-
-                                        <input type="text" name="judul" value="{{ $item->judul }}" required
-                                            class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
-                                        <input type="text" name="nomor_ba" value="{{ $item->nomor_ba }}"
-                                            class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
-                                        <input type="date" name="tanggal_ba" value="{{ $item->tanggal_ba }}"
-                                            class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
-                                        <input type="text" name="tempat" value="{{ $item->tempat }}"
-                                            class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">
-                                        <textarea name="pihak_terlibat" class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">{{ $item->pihak_terlibat }}</textarea>
-                                        <textarea name="keterangan" class="w-full border px-3 py-2 mb-2 rounded focus:ring focus:ring-green-200">{{ $item->keterangan }}</textarea>
-
-                                        <!-- ✅ File Upload -->
-                                        <label class="block text-sm font-semibold text-gray-600 mb-1">Ganti File
-                                            (opsional)
-                                        </label>
-                                        <input type="file" name="file_dokumen"
-                                            class="w-full border border-gray-500 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-
-                                        @if ($item->file_dokumen)
-                                            <div class="text-xs text-blue-600 mt-1">
-                                                File saat ini:
-                                                <a href="{{ asset('storage/' . $item->file_dokumen) }}" target="_blank"
-                                                    class="underline hover:text-blue-800">Lihat Dokumen</a>
-                                            </div>
-                                        @endif
-
-                                        <div class="flex justify-end space-x-2 mt-4">
-                                            <button type="button" @click="editId = null"
-                                                class="px-3 py-1 bg-gray-400 rounded text-sm text-white">
-                                                Batal
-                                            </button>
-                                            <button type="submit"
-                                                class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">
-                                                Simpan
-                                            </button>
-                                        </div>
-                                    </form>
                                 </div>
-                            </div>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-3 text-gray-600">Belum ada data</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @include('components.pagination', ['data' => $dokumen_ba])
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-3 text-gray-600">Belum ada data</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                @include('components.pagination', ['data' => $dokumen_ba])
         </div>
 
         <!-- ✅ Modal Tambah -->
@@ -269,4 +347,84 @@
             });
         });
     </script>
+    <script>
+        // 🔹 SweetAlert untuk hapus banyak data (checkbox)
+        const bulkForm = document.getElementById('bulkDeleteForm');
+        const bulkDeleteBtn = document.getElementById('deleteSelected');
+
+        if (bulkForm && bulkDeleteBtn) {
+            bulkForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const checked = document.querySelectorAll('.select-item:checked');
+                if (checked.length === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Belum ada data yang dipilih',
+                        text: 'Silakan centang data yang ingin dihapus.',
+                        confirmButtonColor: '#22c55e',
+                        background: '#f9fafb',
+                        color: '#1f2937',
+                        iconColor: '#22c55e',
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: `Yakin ingin menghapus ${checked.length} data terpilih?`,
+                    text: 'Data yang sudah dihapus tidak dapat dikembalikan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#9ca3af',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal',
+                    background: '#f9fafb',
+                    color: '#1f2937',
+                    iconColor: '#ef4444',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        bulkForm.submit();
+                    }
+                });
+            });
+        }
+    </script>
+
+    <script>
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.select-item');
+        const deleteBtn = document.getElementById('deleteSelected');
+
+        selectAll.addEventListener('change', () => {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            toggleDeleteButton();
+        });
+
+        checkboxes.forEach(cb => cb.addEventListener('change', toggleDeleteButton));
+
+        function toggleDeleteButton() {
+            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            deleteBtn.disabled = !anyChecked;
+        }
+    </script>
+
+    @if (request()->has('highlight_id'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const row = document.getElementById('row-{{ request('highlight_id') }}');
+                if (row) {
+                    row.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    // Tambahkan efek highlight agar lebih jelas
+                    row.classList.add('fade-once');
+                }
+            });
+        </script>
+    @endif
+
+
 </x-app-layout>

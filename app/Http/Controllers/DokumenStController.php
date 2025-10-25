@@ -88,7 +88,7 @@ class DokumenStController extends Controller
         $dokumen_st = DokumenSt::findOrFail($id);
 
         $request->validate([
-           'judul' => 'required|string|max:255',
+            'judul' => 'required|string|max:255',
             'nomor_st' => 'required|string|max:255',
             'tanggal_st' => 'required|date',
             'pemberi_tugas' => 'required|string|max:255',
@@ -130,5 +130,25 @@ class DokumenStController extends Controller
 
         return redirect()->route('dokumen_st.index')
             ->with('success', 'Data berhasil dihapus');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = DokumenSt::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        DokumenSt::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

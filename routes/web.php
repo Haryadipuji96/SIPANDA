@@ -25,6 +25,7 @@ use App\Http\Controllers\DokumenSkMahasiswaController;
 use App\Http\Controllers\DokumenStController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\UserController;
+use App\Models\DokumenBa;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,6 +47,28 @@ Route::delete('/fakultas_syariahs/bulk-delete', [FakultasSyariahController::clas
 Route::delete('/data_tendik/bulk-delete', [DataTendikController::class, 'bulkDelete'])->name('data_tendik.bulkDelete');
 Route::delete('/hki/bulk-delete', [HKIController::class, 'bulkDelete'])->name('hki.bulkDelete');
 Route::delete('/dokumen_htn/bulk-delete', [DokumenHtnController::class, 'bulkDelete'])->name('dokumen_htn.bulkDelete');
+Route::delete('/prodi_bkpi/bulk-delete', [ProdiBkpiController::class, 'bulkDelete'])->name('prodi_bkpi.bulkDelete');
+Route::delete('/fakultas_tarbiyah/bulk-delete', [FakultasTarbiyahController::class, 'bulkDelete'])->name('fakultas_tarbiyah.bulkDelete');
+Route::delete('/dokumen_mpi/bulk-delete', [DokumenMouMPIController::class, 'bulkDelete'])->name('dokumen_mpi.bulkDelete');
+Route::delete('/dokumen_piaud/bulk-delete', [DokumenMouPIAUDController::class, 'bulkDelete'])->name('dokumen_piaud.bulkDelete');
+Route::delete('/dokumen_pai/bulk-delete', [DokumenMouPAIController::class, 'bulkDelete'])->name('dokumen_pai.bulkDelete');
+Route::delete('/dokumen_pgmi/bulk-delete', [DokumenMouPGMIController::class, 'bulkDelete'])->name('dokumen_pgmi.bulkDelete');
+Route::delete('/dokumen_iait/bulk-delete', [DokumenMouInstitutIAITController::class, 'bulkDelete'])->name('dokumen_iait.bulkDelete');
+Route::delete('/dokumen_pascasarjana/bulk-delete', [DokumenMouPascasarjanaController::class, 'bulkDelete'])->name('dokumen_pascasarjana.bulkDelete');
+Route::delete('/dokumen_sk_institusi/bulk-delete', [DokumenSkInstitusiController::class, 'bulkDelete'])->name('dokumen_sk_institusi.bulkDelete');
+Route::delete('/dokumen_sk_mahasiswa/bulk-delete', [DokumenSkMahasiswaController::class, 'bulkDelete'])->name('dokumen_sk_mahasiswa.bulkDelete');
+Route::delete('/dokumen_st/bulk-delete', [DokumenStController::class, 'bulkDelete'])->name('dokumen_st.bulkDelete');
+Route::delete('/dokumen_ba/bulk-delete', [DokumenBaController::class, 'bulkDelete'])->name('dokumen_ba.bulkDelete');
+Route::delete('/data_sarpras/bulk-delete', [DataSarprasController::class, 'bulkDelete'])->name('data_sarpras.bulkDelete');
+Route::delete('/dokumen_peraturan/bulk-delete', [DokumenPeraturanController::class, 'bulkDelete'])->name('dokumen_peraturan.bulkDelete');
+
+
+
+
+
+
+
+
 
 
 Route::get('/activity-report', function () {

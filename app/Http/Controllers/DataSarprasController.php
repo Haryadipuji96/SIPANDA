@@ -31,7 +31,7 @@ class DataSarprasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-           'nama_barang' => 'required|string|max:255',
+            'nama_barang' => 'required|string|max:255',
             'kategori' => 'required|string',
             'lokasi' => 'nullable|string|max:255',
             'jumlah' => 'nullable|integer|min:1',
@@ -130,5 +130,25 @@ class DataSarprasController extends Controller
 
         return redirect()->route('data_sarpras.index')
             ->with('success', 'Data berhasil dihapus');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = DataSarpras::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        DataSarpras::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

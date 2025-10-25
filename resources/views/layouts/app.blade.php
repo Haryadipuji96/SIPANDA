@@ -204,7 +204,7 @@
 </head>
 
 <body class="font-sans antialiased"
-    style="background: url('/images/Gambar5.jpg') no-repeat center center fixed; background-size: cover;">
+    style="background: url('/images/Gambar3.jpg') no-repeat center center fixed; background-size: cover;">
     <div class="h-screen bg-gray-100/40 dark:bg-gray-900/70 flex overflow-hidden" x-data="{
         sidebarOpen: false,
         initialized: false,
@@ -284,146 +284,119 @@
         <div class="main-content-unaffected flex-1 flex flex-col min-h-0">
 
             <!-- Top Navbar -->
-            <nav
-                class="bg-white/95 backdrop-blur-sm shadow px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-40">
-                <div class="flex items-center">
-                    <!-- Tombol Toggle Sidebar - HANYA MOBILE -->
-                    <button @click="sidebarOpen = !sidebarOpen"
-                        class="sidebar-toggle-btn mr-3 md:mr-4 p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition duration-200">
-                        <i class="fa-solid fa-bars text-lg md:text-xl"></i>
-                    </button>
+            <!-- Top Navbar -->
+<nav
+    class="bg-white/95 backdrop-blur-sm shadow px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-40">
 
-                    <!-- Logo dan Nama Aplikasi -->
-                    <div
-                        class="flex items-center text-2xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-yellow-400 to-orange-500 drop-shadow-lg">
-                        <i class="fas fa-leaf mr-2 md:mr-3 text-green-500"></i>
-                        <span class="hidden sm:inline">{{ config('app.name', 'SIPANDA') }}</span>
-                        <span class="sm:hidden">SIPANDA</span>
-                    </div>
+    <div class="flex items-center w-full justify-between">
+        <!-- Tombol Toggle Sidebar - HANYA MOBILE -->
+        <button @click="sidebarOpen = !sidebarOpen"
+            class="sidebar-toggle-btn mr-3 md:mr-4 p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition duration-200">
+            <i class="fa-solid fa-bars text-lg md:text-xl"></i>
+        </button>
 
+        <!-- 🔍 Form Pencarian (Menggantikan Logo) -->
+        <form action="{{ route('search') }}" method="GET" id="globalSearchForm"
+            class="relative w-[180px] sm:w-[240px] md:w-[320px] lg:w-[400px] mx-2">
+            {{-- Input utama --}}
+            <input type="text" name="search" value="{{ request('search') }}" required placeholder=""
+                class="block w-full text-sm h-[38px] sm:h-[42px] px-3 sm:px-4 text-gray-900 bg-white rounded-lg border border-gray-300
+                focus:border-transparent focus:outline focus:outline-2 focus:outline-green-500 focus:ring-0
+                hover:border-green-400 peer overflow-ellipsis pr-[40px]" id="floating_outlined" />
+
+            {{-- Label mengambang --}}
+            <label for="floating_outlined"
+                class="absolute text-[12px] sm:text-[13px] leading-[150%] text-green-600 duration-300 transform
+                -translate-y-[1rem] scale-75 top-2 z-10 origin-[0] bg-white px-1 sm:px-2
+                peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
+                peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75
+                peer-focus:-translate-y-[1rem] start-1">
+                Cari Data...
+            </label>
+
+            {{-- Ikon Search --}}
+            <button type="submit" id="searchButton"
+                class="absolute top-[8px] sm:top-[9px] right-3 text-green-500 hover:text-green-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2" class="w-4 h-4 sm:w-5 sm:h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.2-5.2m1.7-4.3a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                </svg>
+            </button>
+
+            {{-- Loader Spinner --}}
+            <div id="searchLoader"
+                class="hidden absolute top-[8px] sm:top-[9px] right-3 w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin">
+            </div>
+        </form>
+
+        <!-- Bagian kanan: Notifikasi + Setting + Profil -->
+        <div class="flex items-center space-x-4 md:space-x-6">
+            <!-- Notifikasi -->
+            <button class="relative text-gray-800 hover:text-green-800 hover:scale-105 transition">
+                <i class="fa-regular fa-bell text-lg md:text-xl"></i>
+                <span
+                    class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[16px] text-center">3</span>
+            </button>
+
+            <!-- Dropdown Setting -->
+            <div x-data="{ openSetting: false }" class="relative">
+                <button @click="openSetting = !openSetting"
+                    class="text-gray-800 hover:text-green-800 focus:outline-none hover:scale-110 transition-transform duration-200">
+                    <i class="fa-solid fa-gear text-lg md:text-xl"></i>
+                </button>
+
+                <div x-show="openSetting" @click.away="openSetting = false" x-transition
+                    class="absolute right-0 mt-2 w-44 sm:w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <ul class="py-2 text-gray-700 text-sm md:text-base">
+                        <li>
+                            <a href="{{ route('users.index') }}"
+                                class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
+                                <i class="fa-solid fa-user-plus mr-2 text-green-600 text-sm md:text-base"></i>
+                                Kelola Data User
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('activity.report') }}"
+                                class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
+                                <i class="fa-solid fa-chart-line mr-2 text-blue-600 text-sm md:text-base"></i>
+                                Laporan Aktivitas
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
 
-                <div class="flex items-center space-x-4 md:space-x-6">
-                    <form action="{{ route('search') }}" method="GET" id="globalSearchForm"
-                        class="flex items-center max-w-lg mx-auto">
+            <!-- Profil Pengguna -->
+            <a href="{{ route('profile.edit') }}"
+                class="flex items-center space-x-3 group hover:bg-green-50 px-2 py-1 rounded-lg transition duration-200 hover:scale-105">
 
-                        <label for="voice-search" class="sr-only">Search</label>
-                        <div class="relative w-full">
+                @php
+                    $user = Auth::user();
+                    $avatar =
+                        'https://ui-avatars.com/api/?name=' .
+                        urlencode($user->name) .
+                        '&background=047857&color=fff';
+                @endphp
 
-                            {{-- 🔍 Icon di kiri --}}
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true" class="w-4 h-4 text-gray-500">
-                                    <path
-                                        d="M11.15 5.6h.01m3.337 1.913h.01m-6.979 0h.01M5.541 11h.01M15 15h2.706a1.957 1.957 0 0 0 1.883-1.325A9 9 0 1 0 2.043 11.89 9.1 9.1 0 0 0 7.2 19.1a8.62 8.62 0 0 0 3.769.9A2.013 2.013 0 0 0 13 18v-.857A2.034 2.034 0 0 1 15 15Z"
-                                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
-                                        stroke="currentColor"></path>
-                                </svg>
-                            </div>
+                <img src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : $avatar }}"
+                    class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition"
+                    alt="Foto Profil">
 
-                            {{-- 🔹 Input pencarian --}}
-                            <input type="text" name="search" required value="{{ request('search') }}"
-                                placeholder="Cari apapun..."
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                focus:ring-green-500 focus:border-green-500 block w-full ps-10 p-2.5 
-                dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
-
-                            {{-- 🎤 Icon di kanan (opsional) --}}
-                            <button type="button" class="absolute inset-y-0 end-0 flex items-center pe-3">
-                                <svg viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
-                                    class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                    <path
-                                        d="M15 7v3a5.006 5.006 0 0 1-5 5H6a5.006 5.006 0 0 1-5-5V7m7 9v3m-3 0h6M7 1h2a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3Z"
-                                        stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
-                                        stroke="currentColor"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        {{-- 🔘 Tombol submit --}}
-                        <button type="submit" id="searchButton"
-                            class="inline-flex items-center py-2.5 px-3 ms-2 text-sm font-medium text-white 
-            bg-green-500 rounded-lg border border-green-500 hover:bg-green-600 
-            focus:ring-4 focus:outline-none focus:ring-green-300">
-                            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true" class="w-4 h-4 me-2">
-                                <path d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" stroke-width="2"
-                                    stroke-linejoin="round" stroke-linecap="round" stroke="currentColor"></path>
-                            </svg>
-                            Cari
-                        </button>
-
-                        {{-- 🌀 Loader Spinner --}}
-                        <div id="searchLoader"
-                            class="hidden ml-2 w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin">
-                        </div>
-                    </form>
-
-
-
-                    <!-- Notifikasi -->
-                    <button class="relative text-gray-800 hover:text-green-800 hover-scale">
-                        <i class="fa-regular fa-bell text-lg md:text-xl"></i>
-                        <span
-                            class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[16px] text-center">3</span>
-                    </button>
-
-                    <!-- Dropdown Setting -->
-                    <div x-data="{ openSetting: false }" class="relative">
-                        <button @click="openSetting = !openSetting"
-                            class="text-gray-800 hover:text-green-800 focus:outline-none hover-scale">
-                            <i class="fa-solid fa-gear text-lg md:text-xl"></i>
-                        </button>
-
-                        <div x-show="openSetting" @click.away="openSetting = false" x-transition
-                            class="absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                            <ul class="py-2 text-gray-700">
-                                <li>
-                                    <a href="{{ route('users.index') }}"
-                                        class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition text-sm md:text-base">
-                                        <i class="fa-solid fa-user-plus mr-2 text-green-600 text-sm md:text-base"></i>
-                                        Kelola Data User
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('activity.report') }}"
-                                        class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition text-sm md:text-base">
-                                        <i class="fa-solid fa-chart-line mr-2 text-blue-600 text-sm md:text-base"></i>
-                                        Laporan Aktivitas
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Profil Pengguna -->
-                    <a href="{{ route('profile.edit') }}"
-                        class="flex items-center space-x-3 group hover:bg-green-50 px-2 py-1 rounded-lg transition duration-200 hover-scale">
-                        @php
-                            $user = Auth::user();
-                            $avatar =
-                                'https://ui-avatars.com/api/?name=' .
-                                urlencode($user->name) .
-                                '&background=047857&color=fff';
-                        @endphp
-
-                        <img src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : $avatar }}"
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition"
-                            alt="Foto Profil">
-
-                        <div class="hidden md:block text-left">
-                            <h2 class="font-semibold text-sm text-gray-700 group-hover:text-green-700">
-                                {{ $user->name }}
-                            </h2>
-                            <p class="text-xs text-gray-500 truncate max-w-[140px]">
-                                {{ $user->email }}
-                            </p>
-                        </div>
-                    </a>
+                <div class="hidden sm:block text-left">
+                    <h2
+                        class="font-semibold text-sm text-gray-700 group-hover:text-green-700 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
+                        {{ $user->name }}
+                    </h2>
+                    <p class="text-xs text-gray-500 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
+                        {{ $user->email }}
+                    </p>
                 </div>
-            </nav>
+            </a>
+        </div>
+    </div>
+</nav>
+
 
             <!-- Page Heading -->
             @isset($header)
@@ -449,146 +422,6 @@
     </div>
 
 
-    <script>
-        // Immediate hide untuk x-cloak elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('[x-cloak]');
-            elements.forEach(el => {
-                el.style.display = 'none';
-            });
-        });
-    </script>
-
-    <script>
-        // Prevent body scroll when sidebar is open on mobile
-        document.addEventListener('alpine:init', () => {
-            Alpine.effect(() => {
-                const alpineElement = document.querySelector('[x-data]');
-                if (alpineElement && alpineElement.__x) {
-                    const sidebarOpen = Alpine.$data(alpineElement).sidebarOpen;
-                    const isMobile = window.innerWidth < 768;
-
-                    if (sidebarOpen && isMobile) {
-                        document.body.style.overflow = 'hidden';
-                    } else {
-                        document.body.style.overflow = '';
-                    }
-                }
-            });
-        });
-
-        // Close sidebar when route changes (untuk mobile)
-        document.addEventListener('DOMContentLoaded', function() {
-            const links = document.querySelectorAll('a');
-            links.forEach(link => {
-                link.addEventListener('click', function() {
-                    const alpineElement = document.querySelector('[x-data]');
-                    if (alpineElement && alpineElement.__x && window.innerWidth < 768) {
-                        Alpine.$data(alpineElement).sidebarOpen = false;
-                    }
-                });
-            });
-        });
-
-        // Handle resize untuk update state sidebar
-        window.addEventListener('resize', function() {
-            const alpineElement = document.querySelector('[x-data]');
-            if (alpineElement && alpineElement.__x) {
-                const sidebarState = Alpine.$data(alpineElement);
-                if (window.innerWidth >= 768) {
-                    sidebarState.sidebarOpen = true;
-                } else {
-                    sidebarState.sidebarOpen = false;
-                }
-            }
-        });
-
-        // Auto close sidebar ketika menu di-klik di mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            // Function untuk close sidebar
-            function closeSidebar() {
-                const alpineElement = document.querySelector('[x-data]');
-                if (alpineElement && alpineElement.__x && window.innerWidth < 768) {
-                    Alpine.$data(alpineElement).sidebarOpen = false;
-                }
-            }
-
-            // Event delegation untuk semua link di sidebar
-            document.addEventListener('click', function(e) {
-                const link = e.target.closest('a');
-                const sidebar = e.target.closest('.sidebar-modal');
-
-                // Jika yang di-klik adalah link di dalam sidebar DAN di mobile
-                if (link && sidebar && window.innerWidth < 768) {
-                    // Tunggu sedikit untuk memastikan click event diproses
-                    setTimeout(closeSidebar, 100);
-                }
-            });
-
-            // Juga handle untuk dropdown items di sidebar jika ada
-            document.addEventListener('click', function(e) {
-                const dropdownItem = e.target.closest('.dropdown-item, [x-data] a');
-                const sidebar = e.target.closest('.sidebar-modal');
-
-                if (dropdownItem && sidebar && window.innerWidth < 768) {
-                    setTimeout(closeSidebar, 100);
-                }
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const observer = new MutationObserver(() => {
-                const modal = document.querySelector('.modal.show, [role="dialog"].show');
-                const sidebar = document.querySelector('.sidebar-modal');
-                const overlay = document.querySelector('#global-modal-overlay');
-
-                if (modal) {
-                    // Tambahkan overlay kalau belum ada
-                    if (!overlay) {
-                        const newOverlay = document.createElement('div');
-                        newOverlay.id = 'global-modal-overlay';
-                        newOverlay.style.position = 'fixed';
-                        newOverlay.style.top = 0;
-                        newOverlay.style.left = 0;
-                        newOverlay.style.width = '100vw';
-                        newOverlay.style.height = '100vh';
-                        newOverlay.style.background = 'rgba(0,0,0,0.5)';
-                        newOverlay.style.zIndex = 1500;
-                        newOverlay.style.backdropFilter = 'blur(2px)';
-                        document.body.appendChild(newOverlay);
-                    }
-
-                    // Matikan sidebar & body scroll
-                    if (sidebar) sidebar.style.pointerEvents = 'none';
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    // Hapus overlay dan aktifkan kembali sidebar
-                    if (overlay) overlay.remove();
-                    if (sidebar) sidebar.style.pointerEvents = 'auto';
-                    document.body.style.overflow = '';
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
-    </script>
-
-    <script>
-        document.getElementById('globalSearchForm').addEventListener('submit', function(e) {
-            const pageLoader = document.getElementById('pageLoader');
-
-            // Tampilkan overlay spinner
-            pageLoader.classList.remove('hidden');
-
-            // Supaya spinner sempat kelihatan
-            e.preventDefault();
-            setTimeout(() => this.submit(), 3000);
-        });
-    </script>
 
     <!-- 🌿 Global Page Loader -->
     <div id="pageLoader"
@@ -609,4 +442,148 @@
         </div>
     </div>
 </body>
+
+<script>
+    // Immediate hide untuk x-cloak elements
+    document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('[x-cloak]');
+        elements.forEach(el => {
+            el.style.display = 'none';
+        });
+    });
+</script>
+
+<script>
+    // Prevent body scroll when sidebar is open on mobile
+    document.addEventListener('alpine:init', () => {
+        Alpine.effect(() => {
+            const alpineElement = document.querySelector('[x-data]');
+            if (alpineElement && alpineElement.__x) {
+                const sidebarOpen = Alpine.$data(alpineElement).sidebarOpen;
+                const isMobile = window.innerWidth < 768;
+
+                if (sidebarOpen && isMobile) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+    });
+
+    // Close sidebar when route changes (untuk mobile)
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                const alpineElement = document.querySelector('[x-data]');
+                if (alpineElement && alpineElement.__x && window.innerWidth < 768) {
+                    Alpine.$data(alpineElement).sidebarOpen = false;
+                }
+            });
+        });
+    });
+
+    // Handle resize untuk update state sidebar
+    window.addEventListener('resize', function() {
+        const alpineElement = document.querySelector('[x-data]');
+        if (alpineElement && alpineElement.__x) {
+            const sidebarState = Alpine.$data(alpineElement);
+            if (window.innerWidth >= 768) {
+                sidebarState.sidebarOpen = true;
+            } else {
+                sidebarState.sidebarOpen = false;
+            }
+        }
+    });
+
+    // Auto close sidebar ketika menu di-klik di mobile
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function untuk close sidebar
+        function closeSidebar() {
+            const alpineElement = document.querySelector('[x-data]');
+            if (alpineElement && alpineElement.__x && window.innerWidth < 768) {
+                Alpine.$data(alpineElement).sidebarOpen = false;
+            }
+        }
+
+        // Event delegation untuk semua link di sidebar
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            const sidebar = e.target.closest('.sidebar-modal');
+
+            // Jika yang di-klik adalah link di dalam sidebar DAN di mobile
+            if (link && sidebar && window.innerWidth < 768) {
+                // Tunggu sedikit untuk memastikan click event diproses
+                setTimeout(closeSidebar, 100);
+            }
+        });
+
+        // Juga handle untuk dropdown items di sidebar jika ada
+        document.addEventListener('click', function(e) {
+            const dropdownItem = e.target.closest('.dropdown-item, [x-data] a');
+            const sidebar = e.target.closest('.sidebar-modal');
+
+            if (dropdownItem && sidebar && window.innerWidth < 768) {
+                setTimeout(closeSidebar, 100);
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new MutationObserver(() => {
+            const modal = document.querySelector('.modal.show, [role="dialog"].show');
+            const sidebar = document.querySelector('.sidebar-modal');
+            const overlay = document.querySelector('#global-modal-overlay');
+
+            if (modal) {
+                // Tambahkan overlay kalau belum ada
+                if (!overlay) {
+                    const newOverlay = document.createElement('div');
+                    newOverlay.id = 'global-modal-overlay';
+                    newOverlay.style.position = 'fixed';
+                    newOverlay.style.top = 0;
+                    newOverlay.style.left = 0;
+                    newOverlay.style.width = '100vw';
+                    newOverlay.style.height = '100vh';
+                    newOverlay.style.background = 'rgba(0,0,0,0.5)';
+                    newOverlay.style.zIndex = 1500;
+                    newOverlay.style.backdropFilter = 'blur(2px)';
+                    document.body.appendChild(newOverlay);
+                }
+
+                // Matikan sidebar & body scroll
+                if (sidebar) sidebar.style.pointerEvents = 'none';
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Hapus overlay dan aktifkan kembali sidebar
+                if (overlay) overlay.remove();
+                if (sidebar) sidebar.style.pointerEvents = 'auto';
+                document.body.style.overflow = '';
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('globalSearchForm').addEventListener('submit', function(e) {
+        const pageLoader = document.getElementById('pageLoader');
+
+        // Tampilkan overlay spinner
+        pageLoader.classList.remove('hidden');
+
+        // Supaya spinner sempat kelihatan
+        e.preventDefault();
+        setTimeout(() => this.submit(), 3000);
+    });
+</script>
+
+
+
 </html>

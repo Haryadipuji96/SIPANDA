@@ -109,8 +109,7 @@
                 @csrf
                 @method('DELETE')
 
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-bold text-lg text-gray-700">Daftar Fakultas</h2>
+                <div class="flex justify-between items-center mb-2">  
                     <button type="submit"
                         class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
                         id="deleteSelected" disabled>
@@ -158,7 +157,7 @@
                                         <input type="checkbox" name="ids[]" value="{{ $item->id }}"
                                             class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
                                     </td>
-                                    <td class="border px-3 py-2">{{ $index + 1 }}</td>
+                                   <td class="border px-4 py-2 text-center">{{ $data_tendik->firstItem() + $index }}
                                     <td class="border px-3 py-2">{{ $item->nama_tendik }}</td>
                                     <td class="border px-3 py-2">{{ $item->nip ?? '-' }}</td>
                                     <td class="border px-3 py-2">{{ $item->jabatan }}</td>

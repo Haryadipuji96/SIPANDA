@@ -73,7 +73,6 @@
                 @method('DELETE')
 
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-bold text-lg text-gray-700">Daftar Fakultas</h2>
                     <button type="submit"
                         class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
                         id="deleteSelected" disabled>
