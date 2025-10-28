@@ -3,92 +3,171 @@
 namespace App\Http\Controllers;
 
 use App\Models\DokumenDosen;
-use App\Models\Dosen;
-use App\Models\KategoriDokumen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DokumenDosenController extends Controller
 {
-    // ✅ Menampilkan semua dokumen
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $dokumen = DokumenDosen::with(['dosen', 'kategori'])->latest()->get();
-        $dosens = Dosen::all();
-        $kategoris = KategoriDokumen::all();
 
-        return view('page.dokumen_dosen.index', compact('dokumen', 'dosens', 'kategoris'));
+        $dokumen_dosen = DokumenDosen::paginate(10);
+        return view('page.dokumen_dosen.index', compact('dokumen_dosen'));
     }
 
-    // ✅ Menyimpan dokumen baru
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'dosen_id' => 'required|exists:dosens,id',
-            'kategori_id' => 'required|exists:kategori_dokumens,id',
-            'nama_dokumen' => 'required|string|max:255',
-            'file_path' => 'required|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:2048',
-            'keterangan' => 'nullable|string',
+            'nama' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'nik' => 'required|string|max:20|unique:dokumen_dosens,nik',
+            'pendidikan_terakhir' => 'required|string|max:100',
+            'jabatan' => 'required|string|max:100',
+            'tmt_kerja' => 'required|date',
+            'masa_kerja_tahun' => 'nullable|integer|min:0',
+            'masa_kerja_bulan' => 'nullable|integer|min:0|max:11',
+            'golongan' => 'nullable|string|max:50',
+            'masa_kerja_golongan_tahun' => 'nullable|integer|min:0',
+            'masa_kerja_golongan_bulan' => 'nullable|integer|min:0|max:11',
+            'file_dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:30720',
         ]);
 
-        // Upload file ke storage
-        $path = $request->file('file_path')->store('dokumen_dosen', 'public');
+        // Simpan file ke storage/public/dokumen_dosen
+        if ($request->hasFile('file_dokumen')) {
+            $filePath = $request->file('file_dokumen')->store('dokumen_dosen', 'public');
+        } else {
+            $filePath = null;
+        }
 
+        // Simpan data ke database
         DokumenDosen::create([
-            'dosen_id' => $request->dosen_id,
-            'kategori_id' => $request->kategori_id,
-            'nama_dokumen' => $request->nama_dokumen,
-            'file_path' => $path,
-            'tanggal_upload' => now(),
-            'keterangan' => $request->keterangan,
+            'nama' => $request->nama,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'nik' => $request->nik,
+            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            'jabatan' => $request->jabatan,
+            'tmt_kerja' => $request->tmt_kerja,
+            'masa_kerja_tahun' => $request->masa_kerja_tahun,
+            'masa_kerja_bulan' => $request->masa_kerja_bulan,
+            'golongan' => $request->golongan,
+            'masa_kerja_golongan_tahun' => $request->masa_kerja_golongan_tahun,
+            'masa_kerja_golongan_bulan' => $request->masa_kerja_golongan_bulan,
+            'file_dokumen' => $filePath,
+
         ]);
 
-        return redirect()->back()->with('success', 'Dokumen berhasil ditambahkan!');
+        return redirect()->route('dokumen-dosen.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
-    // ✅ Update dokumen
-    public function update(Request $request, $id)
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        $dokumen = DokumenDosen::findOrFail($id);
+        $dosen = DokumenDosen::findOrFail($id);
+        return view('page.dokumen_dosen.show', compact('dosen'));
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $dokumen_dosen = DokumenDosen::findOrFail($id);
 
         $request->validate([
-            'dosen_id' => 'required|exists:dosens,id',
-            'kategori_id' => 'required|exists:kategori_dokumens,id',
-            'nama_dokumen' => 'required|string|max:255',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:2048',
-            'keterangan' => 'nullable|string',
+            'nama' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'nik' => 'required|string|max:20|unique:dokumen_dosens,nik,' . $id,
+            'pendidikan_terakhir' => 'required|string|max:100',
+            'jabatan' => 'required|string|max:100',
+            'tmt_kerja' => 'required|date',
+            'masa_kerja_tahun' => 'nullable|integer|min:0',
+            'masa_kerja_bulan' => 'nullable|integer|min:0|max:11',
+            'golongan' => 'nullable|string|max:50',
+            'masa_kerja_golongan_tahun' => 'nullable|integer|min:0',
+            'masa_kerja_golongan_bulan' => 'nullable|integer|min:0|max:11',
+            'file_dokumen' => 'nullable|file|mimes:pdf,doc,docx|max:30720',
         ]);
 
-        // Jika file baru diupload, hapus yang lama
-        if ($request->hasFile('file_path')) {
-            if ($dokumen->file_path && Storage::disk('public')->exists($dokumen->file_path)) {
-                Storage::disk('public')->delete($dokumen->file_path);
+        $data = $request->only('nama', 'tempat_lahir', 'tanggal_lahir', 'nik', 'pendidikan_terakhir', 'jabatan', 'tmt_kerja', 'masa_kerja_tahun', 'masa_kerja_bulan', 'golongan', 'masa_kerja_golongan_tahun', 'masa_kerja_golongan_bulan');
+
+        // Jika ada file baru, hapus file lama dan simpan file baru
+        if ($request->hasFile('file_dokumen')) {
+            if ($dokumen_dosen->file && Storage::disk('public')->exists($dokumen_dosen->file)) {
+                Storage::disk('public')->delete($dokumen_dosen->file);
             }
-            $path = $request->file('file_path')->store('dokumen_dosen', 'public');
-            $dokumen->file_path = $path;
+            $data['file_dokumen'] = $request->file('file_dokumen')->store('dokumen_dosen', 'public');
         }
 
-        $dokumen->update([
-            'dosen_id' => $request->dosen_id,
-            'kategori_id' => $request->kategori_id,
-            'nama_dokumen' => $request->nama_dokumen,
-            'keterangan' => $request->keterangan,
-        ]);
+        $dokumen_dosen->update($data);
 
-        return redirect()->back()->with('success', 'Dokumen berhasil diperbarui!');
+        return redirect()->route('dokumen-dosen.index')
+            ->with('success', 'Data berhasil diupdate');
     }
 
-    // ✅ Hapus dokumen
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        $dokumen = DokumenDosen::findOrFail($id);
+        $dokumen_dosen = DokumenDosen::findOrFail($id);
 
-        if ($dokumen->file_path && Storage::disk('public')->exists($dokumen->file_path)) {
-            Storage::disk('public')->delete($dokumen->file_path);
+        // Hapus file jika ada
+        if ($dokumen_dosen->file && Storage::disk('public')->exists($dokumen_dosen->file)) {
+            Storage::disk('public')->delete($dokumen_dosen->file);
         }
 
-        $dokumen->delete();
+        $dokumen_dosen->delete();
 
-        return redirect()->back()->with('success', 'Dokumen berhasil dihapus!');
+        return redirect()->route('dokumen-dosen.index')
+            ->with('success', 'Data berhasil dihapus');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (!$ids) {
+            return back()->with('error', 'Tidak ada data yang dipilih.');
+        }
+
+        // hapus file lama jika perlu
+        $items = DokumenDosen::whereIn('id', $ids)->get();
+        foreach ($items as $item) {
+            if ($item->file && Storage::exists('public/' . $item->file)) {
+                Storage::delete('public/' . $item->file);
+            }
+        }
+
+        DokumenDosen::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' data berhasil dihapus.');
     }
 }

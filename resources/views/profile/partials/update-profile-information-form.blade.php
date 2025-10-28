@@ -64,13 +64,29 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+       
+       <div class="flex items-center gap-4">
+    @if(Auth::user()->role === 'admin')
+        <!-- Jika Admin -->
+        <x-primary-button>
+            {{ __('Save') }}
+        </x-primary-button>
+    @else
+        <!-- Jika Bukan Admin -->
+        <button type="button"
+            class="bg-gray-400 text-white font-semibold px-4 py-2 rounded-md opacity-50 cursor-not-allowed"
+            disabled>
+            {{ __('Save') }}
+        </button>
+    @endif
 
-            @if (session('status') === 'profile-updated')
-                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
-            @endif
-        </div>
+    @if (session('status') === 'profile-updated')
+        <p x-data="{ show: true }" x-show="show" x-transition
+            x-init="setTimeout(() => show = false, 2000)"
+            class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
+    @endif
+</div>
+
+        
     </form>
 </section>

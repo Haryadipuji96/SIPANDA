@@ -9,28 +9,37 @@ class DokumenDosen extends Model
 {
     use HasFactory;
 
-    // Nama tabel di database
     protected $table = 'dokumen_dosens';
 
-    // Kolom yang boleh diisi mass assignment
     protected $fillable = [
-        'dosen_id',
-        'kategori_id',
-        'nama_dokumen',
-        'file_path',
-        'tanggal_upload',
-        'keterangan',
+        'nama',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'nik',
+        'pendidikan_terakhir',
+        'jabatan',
+        'tmt_kerja',
+        'masa_kerja_tahun',
+        'masa_kerja_bulan',
+        'golongan',
+        'masa_kerja_golongan_tahun',
+        'masa_kerja_golongan_bulan',
+        'file_dokumen',
     ];
 
-    // Relasi ke model Dosen
-    public function dosen()
+    public function dokumens()
     {
-        return $this->belongsTo(Dosen::class);
+        return $this->hasMany(DokumenDosen::class);
     }
 
-    // Relasi ke model KategoriDokumen
-    public function kategori()
+    // Accessor tambahan (opsional) untuk menampilkan masa kerja gabungan
+    public function getMasaKerjaAttribute()
     {
-        return $this->belongsTo(KategoriDokumen::class, 'kategori_id');
+        return "{$this->masa_kerja_tahun} Thn {$this->masa_kerja_bulan} Bln";
+    }
+
+    public function getMasaKerjaGolonganAttribute()
+    {
+        return "{$this->masa_kerja_golongan_tahun} Thn {$this->masa_kerja_golongan_bulan} Bln";
     }
 }

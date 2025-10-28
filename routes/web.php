@@ -61,6 +61,7 @@ Route::delete('/dokumen_st/bulk-delete', [DokumenStController::class, 'bulkDelet
 Route::delete('/dokumen_ba/bulk-delete', [DokumenBaController::class, 'bulkDelete'])->name('dokumen_ba.bulkDelete');
 Route::delete('/data_sarpras/bulk-delete', [DataSarprasController::class, 'bulkDelete'])->name('data_sarpras.bulkDelete');
 Route::delete('/dokumen_peraturan/bulk-delete', [DokumenPeraturanController::class, 'bulkDelete'])->name('dokumen_peraturan.bulkDelete');
+Route::delete('/dokumen-dosen/bulk-delete', [DokumenDosenController::class, 'bulkDelete'])->name('dokumen-dosen.bulkDelete');
 
 
 
@@ -76,6 +77,8 @@ Route::get('/activity-report', function () {
 })->name('activity.report');
 
 Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
+Route::get('/dokumen-dosen/{id}', [DokumenDosenController::class, 'show'])->name('dokumen-dosen.show');
+
 
 Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->middleware(['auth', 'verified']);
@@ -103,6 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('dokumen_peraturan', DokumenPeraturanController::class);
     Route::resource('data_tendik', DataTendikController::class);
     Route::resource('dokumen-dosen', DokumenDosenController::class);
+    
 });
 
 require __DIR__ . '/auth.php';

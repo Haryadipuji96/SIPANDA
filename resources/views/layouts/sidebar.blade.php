@@ -1,4 +1,4 @@
-<aside class="sidebar-modal text-white h-screen flex flex-col z-50" :class="{ 'open': sidebarOpen }">
+<aside class="sidebar-modal text-white h-screen flex flex-col z-40" :class="{ 'open': sidebarOpen }">
 
     <!-- Tombol Close -->
     <button @click="sidebarOpen = false" class="sidebar-close-btn md:hidden"
@@ -103,11 +103,11 @@
                                         </a>
                                         <a href="{{ route('hki.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            HKI
+                                           Prodi HKI
                                         </a>
                                         <a href="{{ route('dokumen_htn.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm">
-                                            HTN
+                                            Prodi HTN
                                         </a>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                         class="bg-green-800 pl-4 md:pl-8 transition-all duration-300">
                                         <a href="{{ route('prodi_bkpi.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            BKPI
+                                            Prodi BKPI
                                         </a>
                                         <a href="{{ route('fakultas_tarbiyah.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
@@ -133,19 +133,19 @@
                                         </a>
                                         <a href="{{ route('dokumen_mpi.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            MPI
+                                            Prodi MPI
                                         </a>
                                         <a href="{{ route('dokumen_piaud.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            PIAUD
+                                           Prodi PIAUD
                                         </a>
                                         <a href="{{ route('dokumen_pai.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            PAI
+                                           Prodi PAI
                                         </a>
                                         <a href="{{ route('dokumen_pgmi.index') }}"
                                             class="block px-4 md:px-6 py-2 hover:bg-green-500 text-xs md:text-sm border-b border-green-500">
-                                            PGMI
+                                            Prodi PGMI
                                         </a>
                                     </div>
                                 </div>

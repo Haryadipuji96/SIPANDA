@@ -284,118 +284,147 @@
         <div class="main-content-unaffected flex-1 flex flex-col min-h-0">
 
             <!-- Top Navbar -->
-            <!-- Top Navbar -->
-<nav
-    class="bg-white/95 backdrop-blur-sm shadow px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-40">
+            <nav
+                class="bg-white/95 backdrop-blur-sm shadow px-4 md:px-6 py-3 flex justify-between items-center sticky top-0 z-40">
 
-    <div class="flex items-center w-full justify-between">
-        <!-- Tombol Toggle Sidebar - HANYA MOBILE -->
-        <button @click="sidebarOpen = !sidebarOpen"
-            class="sidebar-toggle-btn mr-3 md:mr-4 p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition duration-200">
-            <i class="fa-solid fa-bars text-lg md:text-xl"></i>
-        </button>
+                <div class="flex items-center w-full justify-between">
+                    <!-- Tombol Toggle Sidebar - HANYA MOBILE -->
+                    <button @click="sidebarOpen = !sidebarOpen"
+                        class="sidebar-toggle-btn mr-3 md:mr-4 p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-green-50 transition duration-200">
+                        <i class="fa-solid fa-bars text-lg md:text-xl"></i>
+                    </button>
 
-        <!-- 🔍 Form Pencarian (Menggantikan Logo) -->
-        <form action="{{ route('search') }}" method="GET" id="globalSearchForm"
-            class="relative w-[180px] sm:w-[240px] md:w-[320px] lg:w-[400px] mx-2">
-            {{-- Input utama --}}
-            <input type="text" name="search" value="{{ request('search') }}" required placeholder=""
-                class="block w-full text-sm h-[38px] sm:h-[42px] px-3 sm:px-4 text-gray-900 bg-white rounded-lg border border-gray-300
+                    <!-- 🔍 Form Pencarian (Menggantikan Logo) -->
+                    <form action="{{ route('search') }}" method="GET" id="globalSearchForm"
+                        class="relative w-[180px] sm:w-[240px] md:w-[320px] lg:w-[400px] mx-2">
+                        {{-- Input utama --}}
+                        <input type="text" name="search" value="{{ request('search') }}" required placeholder=""
+                            class="block w-full text-sm h-[38px] sm:h-[42px] px-3 sm:px-4 text-gray-900 bg-white rounded-lg border border-gray-300
                 focus:border-transparent focus:outline focus:outline-2 focus:outline-green-500 focus:ring-0
-                hover:border-green-400 peer overflow-ellipsis pr-[40px]" id="floating_outlined" />
+                hover:border-green-400 peer overflow-ellipsis pr-[40px]"
+                            id="floating_outlined" />
 
-            {{-- Label mengambang --}}
-            <label for="floating_outlined"
-                class="absolute text-[12px] sm:text-[13px] leading-[150%] text-green-600 duration-300 transform
+                        {{-- Label mengambang --}}
+                        <label for="floating_outlined"
+                            class="absolute text-[12px] sm:text-[13px] leading-[150%] text-green-600 duration-300 transform
                 -translate-y-[1rem] scale-75 top-2 z-10 origin-[0] bg-white px-1 sm:px-2
                 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
                 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75
                 peer-focus:-translate-y-[1rem] start-1">
-                Cari Data...
-            </label>
+                            Cari Data...
+                        </label>
 
-            {{-- Ikon Search --}}
-            <button type="submit" id="searchButton"
-                class="absolute top-[8px] sm:top-[9px] right-3 text-green-500 hover:text-green-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2" class="w-4 h-4 sm:w-5 sm:h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="m21 21-5.2-5.2m1.7-4.3a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                </svg>
-            </button>
+                        {{-- Ikon Search --}}
+                        <button type="submit" id="searchButton"
+                            class="absolute top-[8px] sm:top-[9px] right-3 text-green-500 hover:text-green-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2" class="w-4 h-4 sm:w-5 sm:h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-5.2-5.2m1.7-4.3a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </button>
 
-            {{-- Loader Spinner --}}
-            <div id="searchLoader"
-                class="hidden absolute top-[8px] sm:top-[9px] right-3 w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin">
-            </div>
-        </form>
+                        {{-- Loader Spinner --}}
+                        <div id="searchLoader"
+                            class="hidden absolute top-[8px] sm:top-[9px] right-3 w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin">
+                        </div>
+                    </form>
 
-        <!-- Bagian kanan: Notifikasi + Setting + Profil -->
-        <div class="flex items-center space-x-4 md:space-x-6">
-            <!-- Notifikasi -->
-            <button class="relative text-gray-800 hover:text-green-800 hover:scale-105 transition">
-                <i class="fa-regular fa-bell text-lg md:text-xl"></i>
-                <span
-                    class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[16px] text-center">3</span>
-            </button>
+                    <!-- Bagian kanan: Notifikasi + Setting + Profil -->
+                    <div class="flex items-center space-x-4 md:space-x-6">
+                        <!-- Notifikasi -->
+                        <button class="relative text-gray-800 hover:text-green-800 hover:scale-105 transition">
+                            <i class="fa-regular fa-bell text-lg md:text-xl"></i>
+                            <span
+                                class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[16px] text-center">3</span>
+                        </button>
 
-            <!-- Dropdown Setting -->
-            <div x-data="{ openSetting: false }" class="relative">
-                <button @click="openSetting = !openSetting"
-                    class="text-gray-800 hover:text-green-800 focus:outline-none hover:scale-110 transition-transform duration-200">
-                    <i class="fa-solid fa-gear text-lg md:text-xl"></i>
-                </button>
+                        <!-- Dropdown Setting -->
+                        <div x-data="{ openSetting: false }" class="relative">
+                            <button @click="openSetting = !openSetting"
+                                class="text-gray-800 hover:text-green-800 focus:outline-none hover:scale-110 transition-transform duration-200">
+                                <i class="fa-solid fa-gear text-lg md:text-xl"></i>
+                            </button>
 
-                <div x-show="openSetting" @click.away="openSetting = false" x-transition
-                    class="absolute right-0 mt-2 w-44 sm:w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <ul class="py-2 text-gray-700 text-sm md:text-base">
-                        <li>
-                            <a href="{{ route('users.index') }}"
-                                class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
-                                <i class="fa-solid fa-user-plus mr-2 text-green-600 text-sm md:text-base"></i>
-                                Kelola Data User
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('activity.report') }}"
-                                class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
-                                <i class="fa-solid fa-chart-line mr-2 text-blue-600 text-sm md:text-base"></i>
-                                Laporan Aktivitas
-                            </a>
-                        </li>
-                    </ul>
+                            <div x-show="openSetting" @click.away="openSetting = false" x-transition
+                                class="absolute right-0 mt-2 w-44 sm:w-48 md:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                <ul class="py-2 text-gray-700 text-sm md:text-base">
+
+                                    {{-- ✅ Kelola Data User --}}
+                                    @canAdmin
+                                    <li>
+                                        <a href="{{ route('users.index') }}"
+                                            class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
+                                            <i
+                                                class="fa-solid fa-user-plus mr-2 text-green-600 text-sm md:text-base"></i>
+                                            Kelola Data User
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="opacity-50 pointer-events-none cursor-not-allowed select-none">
+                                        <div class="flex items-center px-3 md:px-4 py-2">
+                                            <i
+                                                class="fa-solid fa-user-plus mr-2 text-gray-400 text-sm md:text-base"></i>
+                                            Kelola Data User
+                                        </div>
+                                    </li>
+                                    @endcanAdmin
+
+                                    {{-- ✅ Laporan Aktivitas --}}
+                                    @canAdmin
+                                    <li>
+                                        <a href="{{ route('activity.report') }}"
+                                            class="flex items-center px-3 md:px-4 py-2 hover:bg-gray-100 transition">
+                                            <i
+                                                class="fa-solid fa-chart-line mr-2 text-blue-600 text-sm md:text-base"></i>
+                                            Laporan Aktivitas
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="opacity-50 pointer-events-none cursor-not-allowed select-none">
+                                        <div class="flex items-center px-3 md:px-4 py-2">
+                                            <i
+                                                class="fa-solid fa-chart-line mr-2 text-gray-400 text-sm md:text-base"></i>
+                                            Laporan Aktivitas
+                                        </div>
+                                    </li>
+                                    @endcanAdmin
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Profil Pengguna -->
+                        
+                        <a href="{{ route('profile.edit') }}"
+                            class="flex items-center space-x-3 group hover:bg-green-50 px-2 py-1 rounded-lg transition duration-200 hover:scale-105">
+
+                            @php
+                                $user = Auth::user();
+                                $avatar =
+                                    'https://ui-avatars.com/api/?name=' .
+                                    urlencode($user->name) .
+                                    '&background=047857&color=fff';
+                            @endphp
+
+                            <img src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : $avatar }}"
+                                class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition"
+                                alt="Foto Profil">
+
+                            <div class="hidden sm:block text-left">
+                                <h2
+                                    class="font-semibold text-sm text-gray-700 group-hover:text-green-700 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
+                                    {{ $user->name }}
+                                </h2>
+                                <p
+                                    class="text-xs text-gray-500 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
+                                    {{ $user->email }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Profil Pengguna -->
-            <a href="{{ route('profile.edit') }}"
-                class="flex items-center space-x-3 group hover:bg-green-50 px-2 py-1 rounded-lg transition duration-200 hover:scale-105">
-
-                @php
-                    $user = Auth::user();
-                    $avatar =
-                        'https://ui-avatars.com/api/?name=' .
-                        urlencode($user->name) .
-                        '&background=047857&color=fff';
-                @endphp
-
-                <img src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : $avatar }}"
-                    class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition"
-                    alt="Foto Profil">
-
-                <div class="hidden sm:block text-left">
-                    <h2
-                        class="font-semibold text-sm text-gray-700 group-hover:text-green-700 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
-                        {{ $user->name }}
-                    </h2>
-                    <p class="text-xs text-gray-500 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[180px]">
-                        {{ $user->email }}
-                    </p>
-                </div>
-            </a>
-        </div>
-    </div>
-</nav>
+            </nav>
 
 
             <!-- Page Heading -->

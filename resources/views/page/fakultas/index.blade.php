@@ -60,181 +60,290 @@
             animation: fadeHighlight 5s ease-out forwards;
             /* 1 detik aja */
         }
+
+        /* From Uiverse.io by andrew-demchenk0 */
+        .button {
+            position: relative;
+            width: 160px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border: 1px solid #34974d;
+            background-color: #3aa856;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .button,
+        .button__icon,
+        .button__text {
+            transition: all 0.3s ease;
+        }
+
+        .button .button__text {
+            transform: translateX(30px);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .button .button__icon {
+            position: absolute;
+            transform: translateX(110px);
+            height: 100%;
+            width: 40px;
+            background-color: #34974d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button .svg {
+            width: 24px;
+            stroke: #fff;
+        }
+
+        .button:hover {
+            background: #34974d;
+        }
+
+        .button:hover .button__text {
+            color: transparent;
+        }
+
+        .button:hover .button__icon {
+            width: 100%;
+            transform: translateX(0);
+        }
+
+        .button:active .button__icon {
+            background-color: #2e8644;
+        }
+
+        .button:active {
+            border: 1px solid #2e8644;
+        }
     </style>
 
     <div class="p-4 sm:p-6" x-data="{ openTambah: false, editId: null }">
         <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
             <!-- Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    📂 Dokumen Fakultas Ekonomi
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 text-center sm:text-left">
+                    Dokumen Fakultas Ekonomi
                 </h1>
-                <!-- Tombol Tambah -->
-                <button @click="openTambah = true"
-                    class="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition duration-200 ease-in-out transform hover:scale-105">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span>Tambah Dokumen</span>
+
+                @canAdmin
+                <button type="button" @click="openTambah = true" class="button">
+                    <span class="button__text">Add Data</span>
+                    <span class="button__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="svg">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </span>
                 </button>
+                @endcanAdmin
             </div>
+
 
             <form id="bulkDeleteForm" action="{{ route('fakultas.bulkDelete') }}" method="POST">
                 @csrf
                 @method('DELETE')
 
                 <div class="flex justify-between items-center mb-2">
-                    <button type="submit"
-                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
-                        id="deleteSelected" disabled>
-                        Hapus Terpilih
+                    <h2 class="font-bold text-lg flex items-center gap-2 text-gray-700">
+                        <i class="fa-solid fa-table-list"></i>
+                    </h2>
+                    @canAdmin
+                    <button type="submit" id="deleteSelected" disabled
+                        class="group relative flex h-14 w-14 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-red-800 bg-red-400 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                        <!-- Spinner icon -->
+                        <svg viewBox="0 0 1.625 1.625"
+                            class="absolute -top-7 fill-white delay-100 group-hover:top-6 group-hover:animate-[spin_1.4s_linear] group-hover:duration-1000"
+                            height="15" width="15">
+                            <path
+                                d="M.471 1.024v-.52a.1.1 0 0 0-.098.098v.618c0 .054.044.098.098.098h.487a.1.1 0 0 0 .098-.099h-.39c-.107 0-.195 0-.195-.195">
+                            </path>
+                            <path
+                                d="M1.219.601h-.163A.1.1 0 0 1 .959.504V.341A.033.033 0 0 0 .926.309h-.26a.1.1 0 0 0-.098.098v.618c0 .054.044.098.098.098h.487a.1.1 0 0 0 .098-.099v-.39a.033.033 0 0 0-.032-.033">
+                            </path>
+                            <path
+                                d="m1.245.465-.15-.15a.02.02 0 0 0-.016-.006.023.023 0 0 0-.023.022v.108c0 .036.029.065.065.065h.107a.023.023 0 0 0 .023-.023.02.02 0 0 0-.007-.016">
+                            </path>
+                        </svg>
+
+                        <!-- Horizontal line (animate on hover) -->
+                        <svg width="16" fill="none" viewBox="0 0 39 7"
+                            class="origin-right duration-500 group-hover:rotate-90">
+                            <line stroke-width="4" stroke="white" y2="5" x2="39" y1="5"></line>
+                            <line stroke-width="3" stroke="white" y2="1.5" x2="26.0357" y1="1.5"
+                                x1="12"></line>
+                        </svg>
+
+                        <!-- Trash icon -->
+                        <svg width="16" fill="none" viewBox="0 0 33 39">
+                            <mask fill="white" id="path-1-inside-1_8_19">
+                                <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z"></path>
+                            </mask>
+                            <path mask="url(#path-1-inside-1_8_19)" fill="white"
+                                d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z">
+                            </path>
+                            <path stroke-width="4" stroke="white" d="M12 6L12 29"></path>
+                            <path stroke-width="4" stroke="white" d="M21 6V29"></path>
+                        </svg>
                     </button>
+                    @endcanAdmin
                 </div>
+            </form>
 
-                <!-- Tabel -->
-                <div class="table-wrapper border border-gray-200 rounded-lg">
-                    <table class="w-full text-sm border-collapse">
-                        <thead class="bg-green-600 text-white text-left">
-                            <tr>
-                                <th class="px-4 py-2 border text-center">
-                                    <input type="checkbox" id="selectAll"
+            <!-- Tabel -->
+            <div class="table-wrapper border border-gray-200 rounded-lg">
+                <table class="w-full text-sm border-collapse">
+                    <thead class="bg-green-600 text-white text-left">
+                        <tr>
+                            @canAdmin
+                            <th class="px-4 py-2 border text-center">
+                                <input type="checkbox" id="selectAll"
+                                    class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
+                            </th>
+                            @endcanAdmin
+                            <th class="px-4 py-2 border">No</th>
+                            <th class="px-4 py-2 border">Nama Fakultas</th>
+                            <th class="px-4 py-2 border">Dekan</th>
+                            <th class="px-4 py-2 border">Deskripsi</th>
+                            <th class="px-4 py-2 border">File</th>
+                            <th class="px-4 py-2 border text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($fakultas as $index => $item)
+                            <tr id="row-{{ $item->id }}"
+                                class="
+                                    {{ $index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100' }}
+                                    {{ $highlight &&
+                                    (str_contains(strtolower($item->nama_fakultas), strtolower($highlight)) ||
+                                        str_contains(strtolower($item->dekan ?? ''), strtolower($highlight)) ||
+                                        str_contains(strtolower($item->deskripsi ?? ''), strtolower($highlight)))
+                                        ? 'fade-once'
+                                        : '' }}">
+                                @canAdmin
+                                <td class="border px-4 py-2 text-center">
+                                    <input type="checkbox" name="ids[]" value="{{ $item->id }}"
                                         class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
-                                </th>
-                                <th class="px-4 py-2 border">No</th>
-                                <th class="px-4 py-2 border">Nama Fakultas</th>
-                                <th class="px-4 py-2 border">Dekan</th>
-                                <th class="px-4 py-2 border">Deskripsi</th>
-                                <th class="px-4 py-2 border">File</th>
-                                <th class="px-4 py-2 border text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($fakultas as $index => $item)
-                                <tr id="row-{{ $item->id }}"
-                                    class="
-        {{ $index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100' }}
-        {{ $highlight &&
-        (str_contains(strtolower($item->nama_fakultas), strtolower($highlight)) ||
-            str_contains(strtolower($item->dekan ?? ''), strtolower($highlight)) ||
-            str_contains(strtolower($item->deskripsi ?? ''), strtolower($highlight)))
-            ? 'fade-once'
-            : '' }}
-    ">
+                                </td>
+                                @endcanAdmin
+                                <td class="border px-4 py-2 text-center">{{ $fakultas->firstItem() + $index }}</td>
+                                <td class="border px-4 py-2 font-semibold text-gray-700">{{ $item->nama_fakultas }}
+                                </td>
+                                <td class="border px-4 py-2">{{ $item->dekan ?? '-' }}</td>
+                                <td class="border px-4 py-2 text-gray-600">{{ $item->deskripsi ?? '-' }}</td>
+                                <td class="border px-4 py-2 text-blue-600 text-sm">
+                                    <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                        class="underline hover:text-blue-800">Lihat File</a>
+                                </td>
+                                <td class="border px-3 py-2 text-center space-x-2">
+                                    @canAdmin
+                                    <!-- Tombol Edit -->
+                                    <button type="button" @click="editId = {{ $item->id }}"
+                                        class="text-yellow-500 hover:text-yellow-600 transition" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </button>
 
-                                    <td class="border px-4 py-2 text-center">
-                                        <input type="checkbox" name="ids[]" value="{{ $item->id }}"
-                                            class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
-                                    </td>
-                                    <td class="border px-4 py-2 text-center">{{ $fakultas->firstItem() + $index }}</td>
-                                    <td class="border px-4 py-2 font-semibold text-gray-700">{{ $item->nama_fakultas }}
-                                    </td>
-                                    <td class="border px-4 py-2">{{ $item->dekan ?? '-' }}</td>
-                                    <td class="border px-4 py-2 text-gray-600">{{ $item->deskripsi ?? '-' }}</td>
-                                    <td class="border px-4 py-2 text-blue-600 text-sm">
-                                        <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
-                                            class="underline hover:text-blue-800">Lihat File</a>
-                                    </td>
-                                    <td class="border px-3 py-2 text-center space-x-2">
-                                        <!-- Tombol Edit -->
-                                        <button type="button" @click="editId = {{ $item->id }}"
-                                            class="text-yellow-500 hover:text-yellow-600 transition" title="Edit">
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('fakultas.destroy', $item->id) }}" method="POST"
+                                        class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                            class="btn-hapus text-red-600 hover:text-red-700 transition"
+                                            title="Hapus">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
                                             </svg>
                                         </button>
+                                    </form>
+                                    @endcanAdmin
+                                </td>
+                            </tr>
 
-                                        <!-- Tombol Hapus -->
-                                        <form action="{{ route('fakultas.destroy', $item->id) }}" method="POST"
-                                            class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                class="btn-hapus text-red-600 hover:text-red-700 transition"
-                                                title="Hapus">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4h6v3m-9 0h12" />
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                            <!-- Modal Edit -->
+                            <div x-show="editId === {{ $item->id }}" x-cloak
+                                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+                                <div class="bg-white p-6 rounded-xl w-full max-w-md">
+                                    <h2 class="text-lg font-bold mb-4">Edit Dokumen</h2>
+                                    <form action="{{ route('fakultas.update', $item->id) }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="text" name="nama_fakultas"
+                                            value="{{ $item->nama_fakultas }}" required
+                                            class="w-full border px-2 py-1 mb-2 rounded">
+                                        <input type="text" name="dekan" value="{{ $item->dekan }}" required
+                                            class="w-full border px-2 py-1 mb-2 rounded">
+                                        <textarea name="deskripsi" class="w-full border px-2 py-1 mb-2 rounded">{{ $item->deskripsi }}</textarea>
+                                        <input type="file" name="file"
+                                            class="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-500">
 
-                                <!-- Modal Edit -->
-                                <div x-show="editId === {{ $item->id }}" x-cloak
-                                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-                                    <div class="bg-white p-6 rounded-xl w-full max-w-md">
-                                        <h2 class="text-lg font-bold mb-4">Edit Dokumen</h2>
-                                        <form action="{{ route('fakultas.update', $item->id) }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="text" name="nama_fakultas"
-                                                value="{{ $item->nama_fakultas }}" required
-                                                class="w-full border px-2 py-1 mb-2 rounded">
-                                            <input type="text" name="dekan" value="{{ $item->dekan }}" required
-                                                class="w-full border px-2 py-1 mb-2 rounded">
-                                            <textarea name="deskripsi" class="w-full border px-2 py-1 mb-2 rounded">{{ $item->deskripsi }}</textarea>
-                                            <input type="file" name="file"
-                                                class="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-500">
-
-                                            @if ($item->file)
-                                                <p class="mb-2 text-sm mt-2">
-                                                    File lama:
-                                                    <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
-                                                        class="text-blue-600 underline">Lihat File</a>
-                                                </p>
-                                            @endif
-                                            <div class="flex justify-end space-x-2">
-                                                <button type="button" @click="editId = null"
-                                                    class="px-3 py-1 bg-gray-400 rounded">Batal</button>
-                                                <button type="submit"
-                                                    class="px-3 py-1 bg-green-600 text-white rounded">Simpan</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        @if ($item->file)
+                                            <p class="mb-2 text-sm mt-2">
+                                                File lama:
+                                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                                    class="text-blue-600 underline">Lihat File</a>
+                                            </p>
+                                        @endif
+                                        <div class="flex justify-end space-x-2">
+                                            <button type="button" @click="editId = null"
+                                                class="px-3 py-1 bg-gray-400 rounded">Batal</button>
+                                            <button type="submit"
+                                                class="px-3 py-1 bg-green-600 text-white rounded">Simpan</button>
+                                        </div>
+                                    </form>
                                 </div>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-3 text-gray-600">Belum ada data</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                @include('components.pagination', ['data' => $fakultas])
-
-                <!-- Modal Tambah -->
-                <div x-show="openTambah" x-cloak
-                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-                    <div class="bg-white p-6 rounded-xl w-full max-w-md">
-                        <h2 class="text-lg font-bold mb-4">Tambah Dokumen</h2>
-                        <form action="{{ route('fakultas.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="text" name="nama_fakultas" placeholder="Nama Fakultas" required
-                                class="w-full border px-2 py-1 mb-2 rounded">
-                            <input type="text" name="dekan" placeholder="Dekan" required
-                                class="w-full border px-2 py-1 mb-2 rounded">
-                            <textarea name="deskripsi" placeholder="Deskripsi" class="w-full border px-2 py-1 mb-2 rounded"></textarea>
-                            <input type="file" name="file" required
-                                class="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-500">
-
-                            <div class="flex justify-end space-x-2 mt-3">
-                                <button type="button" @click="openTambah = false"
-                                    class="px-3 py-1 bg-gray-400 rounded">Batal</button>
-                                <button type="submit"
-                                    class="px-3 py-1 bg-green-600 text-white rounded">Simpan</button>
                             </div>
-                        </form>
-                    </div>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-3 text-gray-600">Belum ada data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @include('components.pagination', ['data' => $fakultas])
+
+            <!-- Modal Tambah -->
+            <div x-show="openTambah" x-cloak
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+                <div class="bg-white p-6 rounded-xl w-full max-w-md" @click.away="openTambah = false">
+                    <h2 class="text-lg font-bold mb-4">Tambah Dokumen</h2>
+                    <form action="{{ route('fakultas.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="text" name="nama_fakultas" placeholder="Nama Fakultas" required
+                            class="w-full border px-2 py-1 mb-2 rounded">
+                        <input type="text" name="dekan" placeholder="Dekan" required
+                            class="w-full border px-2 py-1 mb-2 rounded">
+                        <textarea name="deskripsi" placeholder="Deskripsi" class="w-full border px-2 py-1 mb-2 rounded"></textarea>
+                        <input type="file" name="file" required
+                            class="w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-500">
+
+                        <div class="flex justify-end space-x-2 mt-3">
+                            <button type="button" @click="openTambah = false"
+                                class="px-3 py-1 bg-gray-400 rounded">Batal</button>
+                            <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded">Simpan</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
             
         </div>
     </div>

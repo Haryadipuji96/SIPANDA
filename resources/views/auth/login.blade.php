@@ -1,237 +1,249 @@
-<x-guest-layout>
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login SIPANDA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-ka0m/5R..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
-        /* 🌌 Rainy Green Background Animation (Uiverse) */
-        html, body {
+        html,
+        body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden; /* 🚫 Hilangkan scroll di seluruh body */
             font-family: 'Poppins', sans-serif;
-            touch-action: none; /* 🚫 Mencegah scroll/drag di layar sentuh */
-        }
-
-        .rain-bg {
-            position: absolute;
-            inset: 0;
-        }
-
-        .rain-bg::before {
-            content: "";
-            position: absolute;
-            inset: -145%;
-            rotate: -45deg;
-            background: #000;
-            background-image:
-                radial-gradient(4px 100px at 0px 235px, #0f0, #0000),
-                radial-gradient(4px 100px at 300px 235px, #0f0, #0000),
-                radial-gradient(1.5px 1.5px at 150px 117.5px, #0f0 100%, #0000 150%),
-                radial-gradient(4px 100px at 0px 252px, #0f0, #0000),
-                radial-gradient(4px 100px at 300px 252px, #0f0, #0000),
-                radial-gradient(1.5px 1.5px at 150px 126px, #0f0 100%, #0000 150%),
-                radial-gradient(4px 100px at 0px 150px, #0f0, #0000),
-                radial-gradient(4px 100px at 300px 150px, #0f0, #0000),
-                radial-gradient(1.5px 1.5px at 150px 75px, #0f0 100%, #0000 150%);
-            background-size: 300px 235px;
-            animation: hi 150s linear infinite;
-        }
-
-        @keyframes hi {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 0 7000px;
-            }
-        }
-
-        /* 🌫️ Container tengah */
-        .container {
-            position: relative;
-            z-index: 1;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* ⬆️ Pastikan tinggi 1 layar penuh */
-            width: 100%;
             overflow: hidden;
         }
 
-        /* 💚 Card Login Aesthetic */
-        .card {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 25px;
-            width: 340px;
-            min-height: 470px;
-            background: rgba(34, 197, 94, 0.12);
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.25),
-                inset 0 0 20px rgba(34, 197, 94, 0.3);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            backdrop-filter: blur(15px);
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 320px;
+            padding: 1.8rem 1.5rem 2rem;
             border-radius: 16px;
-            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             text-align: center;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* 🖼️ Logo */
-        .logo {
-            width: 85px;
-            height: 85px;
+        .login-logo {
+            width: 75px;
+            height: 75px;
             object-fit: contain;
             border-radius: 50%;
-            background: #fff;
-            padding: 8px;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            margin: 0 auto 15px;
+            display: block;
         }
 
-        /* ✨ Judul dan teks */
         .welcome-title {
+            font-size: 1.1rem;
             font-weight: 700;
-            font-size: 1.2rem;
-            color: #00ff6a;
-            text-shadow: 0 0 8px rgba(0, 255, 100, 0.8);
-            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, #ffffff, #e6f7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
         }
 
         .welcome-subtitle {
-            font-size: 0.9rem;
-            color: #d4d4d4;
-            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.3rem;
         }
 
-        /* 🧾 Input box */
+        /* Input dengan icon di kanan */
         .inputBox {
+            margin-bottom: 1rem;
+            width: 100%;
+            text-align: left;
             position: relative;
-            width: 250px;
+        }
+
+        .inputBox label {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 6px;
+            font-weight: 500;
         }
 
         .inputBox input {
+            display: block;
+            width: 100%;
+            padding: 10px 35px 10px 12px;
+            /* space kanan untuk icon */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0);
+            /* transparan selalu */
+            color: #fff;
+            font-size: 0.85rem;
+            transition: 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .inputBox input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .inputBox input:focus {
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            outline: none;
+            background: rgba(255, 255, 255, 0);
+            /* tetap transparan */
+        }
+
+        /* Icon di input kanan, tengah vertikal */
+        .inputBox i {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .inputBox i:hover {
+            color: #fff;
+        }
+
+        .login-btn {
             width: 100%;
             padding: 10px;
-            outline: none;
             border: none;
-            color: #00ff88;
-            font-size: 1em;
-            background: transparent;
-            border-left: 2px solid #00ff88;
-            border-bottom: 2px solid #00ff88;
-            transition: 0.2s;
-            border-bottom-left-radius: 8px;
-        }
-
-        .inputBox span {
-            position: absolute;
-            left: 0;
-            transform: translateY(-4px);
-            margin-left: 10px;
-            padding: 10px;
-            pointer-events: none;
-            font-size: 12px;
-            color: #a3a3a3;
-            text-transform: uppercase;
-            transition: 0.4s;
-            letter-spacing: 3px;
-        }
-
-        .inputBox input:valid~span,
-        .inputBox input:focus~span {
-            transform: translateX(120px) translateY(-15px);
-            font-size: 0.75em;
-            padding: 5px 10px;
-            background: #00ff6a;
-            color: #000;
-            border-radius: 5px;
-            letter-spacing: 0.1em;
-        }
-
-        .inputBox input:valid,
-        .inputBox input:focus {
-            border: 2px solid #00ff6a;
             border-radius: 8px;
-        }
-
-        /* 🔘 Tombol Login */
-        .enter {
-            height: 45px;
-            width: 130px;
-            border-radius: 8px;
-            border: 2px solid #00ff6a;
-            cursor: pointer;
-            background-color: transparent;
-            transition: 0.4s;
-            text-transform: uppercase;
-            font-size: 12px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: #00ff6a;
-            letter-spacing: 2px;
-        }
-
-        .enter:hover {
-            background-color: #00ff6a;
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 255, 100, 0.8);
-        }
-
-        /* 🔗 Lupa Password */
-        .forgot-link {
-            font-size: 0.8em;
-            color: #a3a3a3;
-            text-decoration: underline;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .forgot-link {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: underline;
         }
 
         .forgot-link:hover {
-            color: #00ff88;
+            color: #fff;
         }
 
-        /* 📱 Responsif mobile */
+        .text-red-500 {
+            color: #ff6b6b;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
         @media (max-width: 480px) {
-            .card {
-                width: 90%;
-                min-height: 420px;
-                padding: 1.5rem 1rem;
+            .login-card {
+                width: 85%;
+                padding: 1.5rem 1.2rem;
             }
-            .inputBox {
-                width: 220px;
-            }
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            /* 🔹 biar icon vertikal center */
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding-right: 35px;
+            /* beri ruang untuk icon */
+            height: 40px;
+            box-sizing: border-box;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            /* Gradient hijau lebih hidup */
+            background: linear-gradient(135deg, #2ecc71, #27ae60, #1abc9c, #16a085);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
+</head>
 
-    <div class="rain-bg"></div>
+<body>
+    <div class="login-card">
+        <img src="{{ asset('images/Logo-IAIT.png') }}" alt="Logo" class="login-logo">
+        <h2 class="welcome-title">Selamat Datang di Website SIPANDA</h2>
+        <p class="welcome-subtitle">Silahkan login untuk melanjutkan</p>
 
-    <div class="container">
-        <div class="card">
-            <img src="{{ asset('images/Logo-IAIT.png') }}" alt="Logo" class="logo">
-            <div>
-                <h2 class="welcome-title">Selamat Datang di Website SIPANDA</h2>
-                <p class="welcome-subtitle">Silahkan login untuk melanjutkan</p>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+
+            <div class="inputBox">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input id="email" type="email" name="email" placeholder="Masukkan email anda"
+                        value="{{ old('email') }}" required autofocus autocomplete="username">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="text-red-500"></div>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" style="display: flex; flex-direction: column; align-items: center; gap: 25px;">
-                @csrf
-                <div class="inputBox">
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
-                    <span>Email</span>
-                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
+            <div class="inputBox">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input id="password" type="password" name="password" placeholder="Masukkan password" required
+                        autocomplete="current-password">
+                    <i class="fas fa-eye" id="togglePassword"></i>
                 </div>
+                <div class="text-red-500"></div>
+            </div>
 
-                <div class="inputBox">
-                    <input id="password" type="password" name="password" required autocomplete="current-password">
-                    <span>Password</span>
-                    <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500 text-sm" />
-                </div>
+            <button type="submit" class="login-btn">Masuk</button>
 
-                @if (Route::has('password.request'))
-                    <a class="forgot-link" href="{{ route('password.request') }}">
-                        {{ __('Lupa kata sandi?') }}
-                    </a>
-                @endif
+            <div>
+                <a class="forgot-link" href="{{ route('password.request') }}">Lupa kata sandi?</a>
+            </div>
+        </form>
 
-                <button type="submit" class="enter">Masuk</button>
-            </form>
-        </div>
     </div>
-</x-guest-layout>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+
+</html>

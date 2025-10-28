@@ -60,40 +60,152 @@
             animation: fadeHighlight 5s ease-out forwards;
             /* 1 detik aja */
         }
+
+        /* From Uiverse.io by andrew-demchenk0 */
+        .button {
+            position: relative;
+            width: 160px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border: 1px solid #34974d;
+            background-color: #3aa856;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .button,
+        .button__icon,
+        .button__text {
+            transition: all 0.3s ease;
+        }
+
+        .button .button__text {
+            transform: translateX(30px);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .button .button__icon {
+            position: absolute;
+            transform: translateX(110px);
+            height: 100%;
+            width: 40px;
+            background-color: #34974d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button .svg {
+            width: 24px;
+            stroke: #fff;
+        }
+
+        .button:hover {
+            background: #34974d;
+        }
+
+        .button:hover .button__text {
+            color: transparent;
+        }
+
+        .button:hover .button__icon {
+            width: 100%;
+            transform: translateX(0);
+        }
+
+        .button:active .button__icon {
+            background-color: #2e8644;
+        }
+
+        .button:active {
+            border: 1px solid #2e8644;
+        }
     </style>
 
     <div class="p-6" x-data="{ openTambah: false, editId: null }">
         <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">📂 Dokumen SK Institusi</h1>
-                <button @click="openTambah = true"
-                    class="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition duration-200 ease-in-out transform hover:scale-105">
-                    + Tambah Dokumen
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 text-center sm:text-left">
+                    Dokumen SK Institusi
+                </h1>
+                @canAdmin
+                <button type="button" @click="openTambah = true" class="button">
+                    <span class="button__text">Add Data</span>
+                    <span class="button__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="svg">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </span>
                 </button>
+                @endcanAdmin
             </div>
+
 
             <form id="bulkDeleteForm" action="{{ route('dokumen_sk_institusi.bulkDelete') }}" method="POST">
                 @csrf
                 @method('DELETE')
-
                 <div class="flex justify-between items-center mb-2">
-                    <button type="submit"
-                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
-                        id="deleteSelected" disabled>
-                        Hapus Terpilih
+                    <h2 class="font-bold text-lg flex items-center gap-2 text-gray-700">
+                        <i class="fa-solid fa-table-list"></i>
+                    </h2>
+                    @canAdmin
+                    <button type="submit" id="deleteSelected" disabled
+                        class="group relative flex h-14 w-14 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-red-800 bg-red-400 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                        <!-- Spinner icon -->
+                        <svg viewBox="0 0 1.625 1.625"
+                            class="absolute -top-7 fill-white delay-100 group-hover:top-6 group-hover:animate-[spin_1.4s_linear] group-hover:duration-1000"
+                            height="15" width="15">
+                            <path
+                                d="M.471 1.024v-.52a.1.1 0 0 0-.098.098v.618c0 .054.044.098.098.098h.487a.1.1 0 0 0 .098-.099h-.39c-.107 0-.195 0-.195-.195">
+                            </path>
+                            <path
+                                d="M1.219.601h-.163A.1.1 0 0 1 .959.504V.341A.033.033 0 0 0 .926.309h-.26a.1.1 0 0 0-.098.098v.618c0 .054.044.098.098.098h.487a.1.1 0 0 0 .098-.099v-.39a.033.033 0 0 0-.032-.033">
+                            </path>
+                            <path
+                                d="m1.245.465-.15-.15a.02.02 0 0 0-.016-.006.023.023 0 0 0-.023.022v.108c0 .036.029.065.065.065h.107a.023.023 0 0 0 .023-.023.02.02 0 0 0-.007-.016">
+                            </path>
+                        </svg>
+
+                        <!-- Horizontal line (animate on hover) -->
+                        <svg width="16" fill="none" viewBox="0 0 39 7"
+                            class="origin-right duration-500 group-hover:rotate-90">
+                            <line stroke-width="4" stroke="white" y2="5" x2="39" y1="5"></line>
+                            <line stroke-width="3" stroke="white" y2="1.5" x2="26.0357" y1="1.5"
+                                x1="12"></line>
+                        </svg>
+
+                        <!-- Trash icon -->
+                        <svg width="16" fill="none" viewBox="0 0 33 39">
+                            <mask fill="white" id="path-1-inside-1_8_19">
+                                <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z"></path>
+                            </mask>
+                            <path mask="url(#path-1-inside-1_8_19)" fill="white"
+                                d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z">
+                            </path>
+                            <path stroke-width="4" stroke="white" d="M12 6L12 29"></path>
+                            <path stroke-width="4" stroke="white" d="M21 6V29"></path>
+                        </svg>
                     </button>
+                    @endcanAdmin
                 </div>
-
-
+            </form>
                 <!-- Tabel -->
                 <div class="table-wrapper border border-gray-200 rounded-lg">
                     <table class="w-full text-sm border-collapse">
                         <thead class="bg-green-600 text-white">
                             <tr>
+                                @canAdmin
                                 <th class="px-4 py-2 border text-center">
                                     <input type="checkbox" id="selectAll"
                                         class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
                                 </th>
+                                @endcanAdmin
                                 <th class="px-4 py-2 border">No</th>
                                 <th class="px-4 py-2 border">Judul</th>
                                 <th class="px-4 py-2 border">Nomor</th>
@@ -116,10 +228,12 @@
                                         str_contains(strtolower($item->tanggal_sk ?? ''), strtolower($highlight)))
                                         ? 'fade-once'
                                         : '' }} ">
+                                        @canAdmin
                                     <td class="border px-4 py-2 text-center">
                                         <input type="checkbox" name="ids[]" value="{{ $item->id }}"
                                             class="select-item cursor-pointer appearance-none w-4 h-4 border-2 border-gray-400 rounded-sm checked:bg-green-600 checked:border-green-600 transition-all duration-150">
                                     </td>
+                                    @endcanAdmin
                                     <td class="border px-4 py-2 text-center">
                                         {{ $dokumen_sk_institusi->firstItem() + $index }}</td>
                                     <td class="border px-4 py-2">{{ $item->judul }}</td>
@@ -138,13 +252,15 @@
                                     </td>
 
                                     <td class="border px-4 py-2 text-center">
+                                        @canAdmin
                                         <div class="flex items-center justify-center gap-3">
                                             <!-- Edit -->
                                             <button type="button" @click="editId = {{ $item->id }}"
                                                 class="p-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full transition"
                                                 title="Edit">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                                                 </svg>
@@ -167,6 +283,7 @@
                                                 </button>
                                             </form>
                                         </div>
+                                        @endcanAdmin
                                     </td>
                                 </tr>
                                 <!-- Modal Edit -->
@@ -179,8 +296,8 @@
                                             @csrf
                                             @method('PUT')
 
-                                            <input type="text" name="judul" value="{{ $item->judul }}" required
-                                                class="w-full border px-2 py-1 mb-2 rounded text-sm">
+                                            <input type="text" name="judul" value="{{ $item->judul }}"
+                                                required class="w-full border px-2 py-1 mb-2 rounded text-sm">
 
                                             <input type="text" name="nomor_sk" value="{{ $item->nomor_sk }}"
                                                 class="w-full border px-2 py-1 mb-2 rounded text-sm">

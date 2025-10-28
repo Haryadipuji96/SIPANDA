@@ -11,15 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dosens', function (Blueprint $table) {
+        Schema::create('dokumen_dosens', function (Blueprint $table) {
             $table->id();
-            $table->string('nip')->nullable();
             $table->string('nama');
-            $table->string('jabatan')->nullable();
-            $table->string('pendidikan_terakhir')->nullable();
-            $table->string('status_kepegawaian')->nullable();
-            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
-            $table->text('keterangan')->nullable();
+            $table->string('tempat_lahir');
+            $table->date('tanggal_lahir');
+            $table->string('nik')->unique();
+            $table->string('pendidikan_terakhir');
+            $table->string('jabatan');
+            $table->date('tmt_kerja')->nullable();
+            $table->integer('masa_kerja_tahun')->default(0);
+            $table->integer('masa_kerja_bulan')->default(0);
+            $table->string('golongan')->nullable();
+            $table->integer('masa_kerja_golongan_tahun')->default(0);
+            $table->integer('masa_kerja_golongan_bulan')->default(0);
+            $table->string('file_dokumen')->nullable(); // 📎 Simpan nama file dokumen
             $table->timestamps();
         });
     }
@@ -30,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dosens');
+        Schema::dropIfExists('dokumen_dosens');
     }
 };

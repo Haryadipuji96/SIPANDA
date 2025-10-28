@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataSarpras;
 use App\Models\DataTendik;
 use App\Models\DokumenBa;
+use App\Models\DokumenDosen;
 use Illuminate\Http\Request;
 use App\Models\FakultasSyariah;
 use App\Models\DokumenEkonomi;
@@ -387,6 +388,23 @@ class GlobalSearchController extends Controller
                 return $item;
             });
 
+        $allItems = DokumenDosen::orderBy('id', 'asc')->pluck('id');
+        $perPage = 10;
+        $dokumen_dosen = DokumenDosen::where('nama', 'like', "%$query%")
+            ->orWhere('nik', 'like', "%$query%")
+            ->orWhere('jabatan', 'like', "%$query%")
+            ->get(['id', 'nama as title', 'nik as detail'])
+            ->map(function ($item) use ($allItems, $perPage) {
+                $index = $allItems->search($item->id);
+                $page = ceil(($index + 1) / $perPage);
+                $item->link = route('dokumen-dosen.index', [
+                    'page' => $page,
+                    'highlight_id' => $item->id
+                ]);
+                $item->category = 'DOKUMEN DATA DOSEN';
+                return $item;
+            });
+
 
 
         // 🔹 Pencarian di User/Admin
@@ -420,6 +438,7 @@ class GlobalSearchController extends Controller
             ->merge($dokumen_ba)
             ->merge($data_sarpras)
             ->merge($dokumen_peraturan)
+            ->merge($dokumen_dosen)
             ->merge($users);
 
         // 🔹 Tampilkan hasil di view (folder page)
